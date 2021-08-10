@@ -1,0 +1,10 @@
+{
+  "extends": "@vtex/tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "lib": ["esnext"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "esnext"
+  }
+}

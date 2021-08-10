@@ -1,0 +1,6 @@
+{
+  "extends": "eslint-config-vtex",
+  "rules": {
+    "no-console": "off"
+  }
+}
