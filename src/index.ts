@@ -6,6 +6,7 @@ import json from 'koa-json'
 import logger from 'koa-logger'
 
 import router from './server'
+import configuration from './utils/configuration.utils'
 
 const app = new Koa()
 const port = process.env.PORT ?? 8080
@@ -14,7 +15,7 @@ app.use(helmet())
 app.use(cors())
 app.use(json())
 app.use(bodyParser())
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+if (configuration.isProd()) {
   app.use(logger())
 }
 
