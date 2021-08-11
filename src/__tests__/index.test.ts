@@ -10,6 +10,18 @@ describe('Index Route', () => {
   })
 })
 
+describe('GraphQL queries', () => {
+  it('returns Hello World data', async () => {
+    const response = await request(app.callback())
+      .post('/graphql')
+      .set('Content-Type', 'application/json')
+      .send({ query: '{ hello }' })
+
+    expect(response.status).toBe(200)
+    expect(response.body.data.hello).toBe('Hello world!')
+  })
+})
+
 afterAll(() => {
   server.close()
 })
