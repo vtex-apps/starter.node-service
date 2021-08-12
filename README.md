@@ -52,4 +52,3 @@ Following scripts are available to be used with [yarn](https://classic.yarnpkg.c
 ## Telemetry
 
 `// TODO`
->>>>>>> ff58002 (Adds instructions to README.md file)
