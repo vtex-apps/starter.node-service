@@ -15,7 +15,7 @@ const config: Config.InitialOptions = {
       statements: 80,
     },
   },
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  roots: ['src/__tests__'],
 }
 
 export default config
