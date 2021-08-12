@@ -1,6 +1,8 @@
 node_modules
 coverage
+dist
 .git
 .husky
+.editorconfig
 *.log
 */__tests__
