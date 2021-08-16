@@ -1,0 +1,82 @@
+#!/bin/bash
+# TODO remove this file from this repository
+set -e # Stops on failure
+
+parse_yaml() {
+   local prefix=$2
+   local s='[[:space:]]*' w='[a-zA-Z0-9_-]*' fs=$(echo @|tr @ '\034')
+   sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 | tr '-' '_' |
+   awk -F$fs '{
+      indent = length($1)/2;
+      vname[indent] = $2;
+      for (i in vname) {if (i > indent) {delete vname[i]}}
+      if (length($3) > 0) {
+         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
+      }
+   }'
+}
+
+eval $(parse_yaml vtex.yml "app_spec_")
+
+pinkie_name=$app_spec_name
+image_name=$app_spec_image_name
+image_version=$app_spec_image_version
+tenant=$app_spec_tenant
+
+docker_server=sangalli.jfrog.io
+container_exposed_port="8080"
+app_health_check_path="/healthcheck"
+is_public_app="false"
+
+cloud_services_api_prefix="https://services.vtex.systems/pinkies"
+service_name=$image_name
+cloud_services_api_url="$cloud_services_api_prefix/$tenant/$pinkie_name"
+
+api_body='{
+   "imageRepository": "'$docker_server'",
+   "imageName": "'$image_name'",
+   "version": "'$image_version'",
+   "port": '$container_exposed_port',
+   "healthCheckPath": "'$app_health_check_path'",
+   "replicas": 1,
+   "resources": {
+       "limits": {
+           "cpu": "500m",
+           "memory": "2048Mi"
+       },
+       "requests": {
+           "cpu": "250m",
+           "memory": "512Mi"
+       }
+   },
+   "public": '$is_public_app',
+   "envVars": {}
+}'
+
+echo "API body: $api_body"
+
+api_method="PUT"
+
+echo "Calling API $api_method $cloud_services_api_url"
+response_status_code=$(curl --write-out '%{http_code}' --silent --output /dev/null \
+--location --request $api_method "$cloud_services_api_url" \
+--header "Content-Type: application/json" \
+--data-raw "$api_body")
+
+echo $cloud_services_api_url
+
+if [[ $response_status_code =~ ^2[0-9]{2}$ ]]
+then
+  echo "App deployed started successfully. API response status code is $response_status_code"
+  if [[ $is_public_app = "true" ]]
+  then
+    service_url="https://$pinkie_name.vtex.io/"
+  else
+    service_url="https://$pinkie_name.vtex.systems/"
+  fi
+  echo "When deploy finishes, you can access it on $service_url"
+else
+  echo "Error deploying app. API response status code is $response_status_code"
+fi
