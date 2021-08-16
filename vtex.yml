@@ -1,0 +1,4 @@
+name: starter-node-service
+tenant: vtex
+version: 0.0.4
+image-name: default-docker-virtual/starter-node-service

@@ -1,8 +1,7 @@
 name: docker build and push
 on:
-  workflow_run:
-    workflows: ["Service CI"]
-    types: [completed]
+  # When a branch or tag is created
+  create:
 
 env:
   REGISTRY: sangalli.jfrog.io
@@ -12,7 +11,9 @@ jobs:
   build-on-success:
 
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    # Proceeds only if it is a tag creation
+    if: ${{ startsWith( github.ref, 'refs/tags' ) }}
 
     permissions:
       contents: read
