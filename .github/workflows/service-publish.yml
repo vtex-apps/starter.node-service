@@ -5,7 +5,7 @@ on:
     types: [completed]
 
 env:
-  REGISTRY: sangalli.jfrog.com
+  REGISTRY: sangalli.jfrog.io
   IMAGE_NAME: default-docker-virtual/starter-node-service
 
 jobs:
