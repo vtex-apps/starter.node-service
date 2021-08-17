@@ -6,14 +6,16 @@ parse_yaml() {
    local prefix=$2
    local s='[[:space:]]*' w='[a-zA-Z0-9_-]*' fs=$(echo @|tr @ '\034')
    sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
-        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 | tr '-' '_' |
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" $1 |
    awk -F$fs '{
       indent = length($1)/2;
       vname[indent] = $2;
       for (i in vname) {if (i > indent) {delete vname[i]}}
       if (length($3) > 0) {
          vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
-         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
+         name = $2
+         sub("-", "_", name)
+         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, name, $3)
       }
    }'
 }
@@ -22,7 +24,7 @@ eval $(parse_yaml vtex.yml "app_spec_")
 
 pinkie_name=$app_spec_name
 image_name=$app_spec_image_name
-image_version=$app_spec_image_version
+image_version=$app_spec_version
 tenant=$app_spec_tenant
 
 docker_server=sangalli.jfrog.io
