@@ -3,6 +3,10 @@
 
 name: Service CI # test, lint and build js files
 
+defaults:
+  run:
+    working-directory: ${{ env.WORK_DIR }} # set by getBackendFolder step
+
 on:
   push:
     branches: [main]
@@ -24,6 +28,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Get backend folder
+        id: getBackendFolder
+        uses: mikefarah/yq@v4.11.2
+        with:
+          cmd: yq eval '.backend.folder' 'vtex.yml'
+      - run: echo WORK_DIR=${{ steps.lookupSdkVersion.outputs.result }} >> GITHUB_ENV
       - run: yarn
       - run: yarn run lint
       - run: yarn run test

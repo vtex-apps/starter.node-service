@@ -2,3 +2,5 @@ name: example-node-service
 tenant: vtex
 version: v0.0.6
 image-name: default-docker-virtual/starter-node-service
+backend:
+  folder: ./
