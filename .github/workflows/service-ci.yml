@@ -29,7 +29,7 @@ jobs:
         uses: mikefarah/yq@v4.11.2
         with:
           cmd: yq eval '.backend.folder' 'vtex.yml'
-      - run: echo "WORK_DIR=${{ steps.getBackendFolder.outputs.result }}"" >> GITHUB_ENV
+      - run: echo "WORK_DIR=${{ steps.getBackendFolder.outputs.result }}" >> GITHUB_ENV
       - run: yarn
         working-directory: ${{ env.WORK_DIR }}
       - run: yarn run lint
