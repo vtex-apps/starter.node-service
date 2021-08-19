@@ -54,4 +54,4 @@ jobs:
         with:
           context: ${{ steps.getBackendFolder.outputs.result }}
           push: true
-          tags: ${{ steps.getAppVersion.outputs.result }}
+          tags: ${{ steps.getBackendImageName.outputs.result }}:${{ steps.getAppVersion.outputs.result }}

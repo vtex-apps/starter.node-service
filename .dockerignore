@@ -2,6 +2,7 @@ node_modules
 coverage
 dist
 .git
+.github
 .husky
 .editorconfig
 *.log
