@@ -21,6 +21,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Get app name
+        id: getAppName
+        uses: mikefarah/yq@v4.11.2
+        with:
+          cmd: yq eval '.name' 'vtex.yml'
+
       - name: Get backend folder
         id: getBackendFolder
         uses: mikefarah/yq@v4.11.2
@@ -67,4 +73,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Create or update a VTEX service for the backend image
-        run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"${{ env.REGISTRY }}\",\"imageName\":\"${{ steps.getBackendImageName.outputs.result }}\",\"version\":\"${{ steps.getAppVersion.outputs.result }}\"}' 'https://appsframework-poc-create-service-backend.vtex.io/apps/services/app-api-test'"
+        run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"${{ env.REGISTRY }}\",\"imageName\":\"${{ steps.getBackendImageName.outputs.result }}\",\"version\":\"${{ steps.getAppVersion.outputs.result }}\"}' 'https://appsframework-poc-create-service-backend.vtex.io/apps/services/${{ steps.getAppName.outputs.result }}-backend'"

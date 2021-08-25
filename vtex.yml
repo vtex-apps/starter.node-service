@@ -1,5 +1,4 @@
-name: example-node-service
-tenant: vtex
+name: starter-node-service
 version: v0.0.9
 backend:
   folder: ./
