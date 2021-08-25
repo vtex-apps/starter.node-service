@@ -66,3 +66,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Create or update a VTEX service for the backend image
+        run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"sangalli.jfrog.io\",\"imageName\":\"default-docker-virtual/vtex-app-1\",\"version\":\"0.0.1\"}' 'https://appsframework-poc-create-service-backend.vtex.io/apps/services/app-api-test'"
