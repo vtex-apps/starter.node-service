@@ -31,13 +31,13 @@ jobs:
         id: getBackendFolder
         uses: mikefarah/yq@v4.11.2
         with:
-          cmd: yq eval '.backend.folder' 'vtex.yml'
+          cmd: yq eval '.backend[0].folder' 'vtex.yml'
 
       - name: Get backend image name
         id: getBackendImageName
         uses: mikefarah/yq@v4.11.2
         with:
-          cmd: yq eval '.backend.image-name' 'vtex.yml'
+          cmd: yq eval '.backend[0].image-name' 'vtex.yml'
 
       - name: Get app version
         id: getAppVersion
