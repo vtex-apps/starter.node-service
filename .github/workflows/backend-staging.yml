@@ -73,4 +73,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Create or update a VTEX service for the service image
-        run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"${{ env.REGISTRY }}\",\"imageName\":\"${{ steps.getServiceImageName.outputs.result }}\",\"version\":\"${{ steps.getAppVersion.outputs.result }}\"}' 'https://appsframework-poc-api.vtex.io/apps/services/${{ steps.getAppName.outputs.result }}-service'"
+        run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"${{ env.REGISTRY }}\",\"imageName\":\"${{ steps.getServiceImageName.outputs.result }}\",\"version\":\"${{ steps.getAppVersion.outputs.result }}\"}' 'https://appsframework-poc-api-service.vtex.io/apps/services/${{ steps.getAppName.outputs.result }}-service'"
