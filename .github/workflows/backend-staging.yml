@@ -27,17 +27,17 @@ jobs:
         with:
           cmd: yq eval '.name' 'vtex.yml'
 
-      - name: Get backend folder
-        id: getBackendFolder
+      - name: Get service folder
+        id: getServiceFolder
         uses: mikefarah/yq@v4.11.2
         with:
-          cmd: yq eval '.backend[0].folder' 'vtex.yml'
+          cmd: yq eval '.services[0].folder' 'vtex.yml'
 
-      - name: Get backend image name
-        id: getBackendImageName
+      - name: Get service image name
+        id: getServiceImageName
         uses: mikefarah/yq@v4.11.2
         with:
-          cmd: yq eval '.backend[0].image-name' 'vtex.yml'
+          cmd: yq eval '.services[0].image-name' 'vtex.yml'
 
       - name: Get app version
         id: getAppVersion
@@ -59,7 +59,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3.4.1
         with:
-          images: ${{ env.REGISTRY }}/${{ steps.getBackendImageName.outputs.result }}
+          images: ${{ env.REGISTRY }}/${{ steps.getServiceImageName.outputs.result }}
           tags: type=semver,pattern={{raw}},value=${{ steps.getAppVersion.outputs.result }}
 
       # Build and push Docker image with Buildx
@@ -67,10 +67,10 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2.6.1
         with:
-          context: ${{ steps.getBackendFolder.outputs.result }}
+          context: ${{ steps.getServiceFolder.outputs.result }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Create or update a VTEX service for the backend image
-        run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"${{ env.REGISTRY }}\",\"imageName\":\"${{ steps.getBackendImageName.outputs.result }}\",\"version\":\"${{ steps.getAppVersion.outputs.result }}\"}' 'https://appsframework-poc-create-service-backend.vtex.io/apps/services/${{ steps.getAppName.outputs.result }}-backend'"
+      - name: Create or update a VTEX service for the service image
+        run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"${{ env.REGISTRY }}\",\"imageName\":\"${{ steps.getServiceImageName.outputs.result }}\",\"version\":\"${{ steps.getAppVersion.outputs.result }}\"}' 'https://appsframework-poc-api.vtex.io/apps/services/${{ steps.getAppName.outputs.result }}-service'"

@@ -1,7 +1,7 @@
 name: starter-node-service
 version: v0.0.9
 
-backend:
-- name: backend
+services:
+- name: service
   folder: ./
   image-name: default-docker-virtual/starter-node-service

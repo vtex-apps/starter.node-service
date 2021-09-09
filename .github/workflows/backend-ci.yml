@@ -25,13 +25,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Get backend folder
-        id: getBackendFolder
+      - name: Get service folder
+        id: getServiceFolder
         uses: mikefarah/yq@v4.11.2
         with:
-          cmd: yq eval '.backend[0].folder' 'vtex.yml'
-      - name: Export env.WORK_DIR as the backend path
-        run: echo "WORK_DIR=${{ steps.getBackendFolder.outputs.result }}" >> $GITHUB_ENV
+          cmd: yq eval '.services[0].folder' 'vtex.yml'
+      - name: Export env.WORK_DIR as the service path
+        run: echo "WORK_DIR=${{ steps.getServiceFolder.outputs.result }}" >> $GITHUB_ENV
       - run: yarn
         working-directory: ${{ env.WORK_DIR }}
       - run: yarn run lint
