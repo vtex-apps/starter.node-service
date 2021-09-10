@@ -1,7 +1,10 @@
 name: starter-node-service
+vendor: vtex
 version: v0.0.9
 
 services:
 - name: service
   folder: ./
   image-name: default-docker-virtual/starter-node-service
+  public: true
+  # Check https://tinyurl.com/ujm8kmuv for optional params - TODO point this link to public doc
