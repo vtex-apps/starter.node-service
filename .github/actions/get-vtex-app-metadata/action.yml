@@ -1,0 +1,50 @@
+name: 'Get VTEX app metadata'
+description: 'Exports VTEX app metadata to the step outputs'
+inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+outputs:
+  app-name:
+    description: "App name"
+    value: ${{ steps.steps.get-app-name.outputs.result.outputs.result }}
+  app-version:
+    description: "App version"
+    value: ${{ steps.get-app-version.outputs.result }}
+  service-name:
+    description: "Service name"
+    value: ${{ steps.get-service-folder.outputs.result }}
+  service-folder:
+    description: "Service folder"
+    value: ${{ steps.get-service-folder.outputs.result }}
+  service-image-name:
+    description: "Service image name"
+    value: ${{ steps.get-service-image-name.outputs.result }}
+runs:
+  using: "composite"
+  steps:
+
+    - name: Get app version
+      id: get-app-version
+      uses: mikefarah/yq@v4.11.2
+      with:
+        cmd: yq eval '.version' 'vtex.yml'
+
+    - name: Get app name
+      id: steps.get-app-name.outputs.result
+      uses: mikefarah/yq@v4.11.2
+      with:
+        cmd: yq eval '.name' 'vtex.yml'
+
+    - name: Get service folder
+      id: get-service-folder
+      uses: mikefarah/yq@v4.11.2
+      with:
+        cmd: yq eval '.services[0].folder' 'vtex.yml'
+
+    - name: Get service image name
+      id: get-service-image-name
+      uses: mikefarah/yq@v4.11.2
+      with:
+        cmd: yq eval '.services[0].image-name' 'vtex.yml'

@@ -25,13 +25,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Get service folder
-        id: getServiceFolder
-        uses: mikefarah/yq@v4.11.2
-        with:
-          cmd: yq eval '.services[0].folder' 'vtex.yml'
+      - name: Get app metadata
+        id: app-metadata
+        uses: ./.github/actions/get-vtex-app-metadata
       - name: Export env.WORK_DIR as the service path
-        run: echo "WORK_DIR=${{ steps.getServiceFolder.outputs.result }}" >> $GITHUB_ENV
+        run: echo "WORK_DIR=${{ steps.app-metadata.outputs.service-name }}" >> $GITHUB_ENV
       - run: yarn
         working-directory: ${{ env.WORK_DIR }}
       - run: yarn run lint
