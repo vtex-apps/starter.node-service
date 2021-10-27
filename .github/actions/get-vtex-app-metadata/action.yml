@@ -8,7 +8,7 @@ inputs:
 outputs:
   app-name:
     description: "App name"
-    value: ${{ steps.steps.get-app-name.outputs.result.outputs.result }}
+    value: ${{ steps.get-app-name.outputs.result.outputs.result }}
   app-version:
     description: "App version"
     value: ${{ steps.get-app-version.outputs.result }}
