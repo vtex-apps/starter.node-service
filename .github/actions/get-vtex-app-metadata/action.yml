@@ -25,17 +25,17 @@ runs:
   using: "composite"
   steps:
 
+    - name: Get app name
+      id: get-app-name
+      uses: mikefarah/yq@v4.11.2
+      with:
+        cmd: yq eval '.name' 'vtex.yml'
+
     - name: Get app version
       id: get-app-version
       uses: mikefarah/yq@v4.11.2
       with:
         cmd: yq eval '.version' 'vtex.yml'
-
-    - name: Get app name
-      id: steps.get-app-name.outputs.result
-      uses: mikefarah/yq@v4.11.2
-      with:
-        cmd: yq eval '.name' 'vtex.yml'
 
     - name: Get service folder
       id: get-service-folder
