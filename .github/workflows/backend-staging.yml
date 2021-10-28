@@ -23,12 +23,12 @@ jobs:
         uses: ./.github/actions/get-vtex-app-metadata
 
       - name: Publish app services to VTEX Docker repository
-        id: app-metadata
+        id: publish-docker-images
         uses: ./.github/actions/publish-docker-image-to-vtex
         with:
           app-metadata: ${{ steps.app-metadata.outputs }}
           docker-user: ${{ secrets.DOCKER_USER }}
-          docker-token: ${{ secrets.DOCKER_PASSWORD }}
+          docker-token: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Create or update a VTEX service for the service image
         run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"${{ env.REGISTRY }}\",\"imageName\":\"${{ steps.app-metadata.outputs.service-image-name }}\",\"version\":\"${{ steps.app-metadata.outputs.app-version }}\"}' 'https://appsframework-poc-api-service.vtex.io/apps/services/${{ steps.app-metadata.outputs.app-name }}-service'"
