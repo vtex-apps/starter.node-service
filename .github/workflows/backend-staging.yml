@@ -26,7 +26,7 @@ jobs:
         id: publish-docker-images
         uses: ./.github/actions/publish-docker-image-to-vtex
         with:
-          app-metadata: ${{ steps.app-metadata.outputs }}
+          app-metadata: ${{ toJSON(steps.app-metadata.outputs) }}
           docker-user: ${{ secrets.DOCKER_USER }}
           docker-token: ${{ secrets.DOCKER_TOKEN }}
 
