@@ -5,9 +5,6 @@ on:
   push:
     branches: [main]
 
-env:
-  REGISTRY: sangalli.jfrog.io
-
 jobs:
   build-on-success:
 
@@ -21,56 +18,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Get app name
-        id: getAppName
-        uses: mikefarah/yq@v4.11.2
-        with:
-          cmd: yq eval '.name' 'vtex.yml'
+      - name: Get app metadata
+        id: app-metadata
+        uses: ./.github/actions/get-vtex-app-metadata
 
-      - name: Get service folder
-        id: getServiceFolder
-        uses: mikefarah/yq@v4.11.2
+      - name: Publish app services to VTEX Docker repository
+        id: app-metadata
+        uses: ./.github/actions/publish-docker-image-to-vtex
         with:
-          cmd: yq eval '.services[0].folder' 'vtex.yml'
-
-      - name: Get service image name
-        id: getServiceImageName
-        uses: mikefarah/yq@v4.11.2
-        with:
-          cmd: yq eval '.services[0].image-name' 'vtex.yml'
-
-      - name: Get app version
-        id: getAppVersion
-        uses: mikefarah/yq@v4.11.2
-        with:
-          cmd: yq eval '.version' 'vtex.yml'
-
-      # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
-        uses: docker/login-action@v1.10.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v3.4.1
-        with:
-          images: ${{ env.REGISTRY }}/${{ steps.getServiceImageName.outputs.result }}
-          tags: type=semver,pattern={{raw}},value=${{ steps.getAppVersion.outputs.result }}
-
-      # Build and push Docker image with Buildx
-      # https://github.com/docker/build-push-action
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2.6.1
-        with:
-          context: ${{ steps.getServiceFolder.outputs.result }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          app-metadata: ${{ steps.app-metadata.outputs }}
+          docker-user: ${{ secrets.DOCKER_USER }}
+          docker-token: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Create or update a VTEX service for the service image
-        run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"${{ env.REGISTRY }}\",\"imageName\":\"${{ steps.getServiceImageName.outputs.result }}\",\"version\":\"${{ steps.getAppVersion.outputs.result }}\"}' 'https://appsframework-poc-api-service.vtex.io/apps/services/${{ steps.getAppName.outputs.result }}-service'"
+        run: "curl -XPUT -H 'Content-type: application/json' -d '{\"imageRepository\":\"${{ env.REGISTRY }}\",\"imageName\":\"${{ steps.app-metadata.outputs.service-image-name }}\",\"version\":\"${{ steps.app-metadata.outputs.app-version }}\"}' 'https://appsframework-poc-api-service.vtex.io/apps/services/${{ steps.app-metadata.outputs.app-name }}-service'"

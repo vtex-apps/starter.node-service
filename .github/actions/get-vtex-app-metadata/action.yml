@@ -1,14 +1,9 @@
 name: 'Get VTEX app metadata'
 description: 'Exports VTEX app metadata to the step outputs'
-inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
 outputs:
   app-name:
     description: "App name"
-    value: ${{ steps.get-app-name.outputs.result.outputs.result }}
+    value: ${{ steps.get-app-name.outputs.result }}
   app-version:
     description: "App version"
     value: ${{ steps.get-app-version.outputs.result }}
