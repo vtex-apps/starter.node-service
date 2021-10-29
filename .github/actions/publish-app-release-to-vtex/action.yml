@@ -18,7 +18,7 @@ runs:
       id: build-api-payload
       uses: mikefarah/yq@v4.11.2
       with:
-        cmd: yq eval '{} * { "context"&#58; "staging", "specification"&#58; . }' -o json -I -0 vtex.yml
+        cmd: yq eval '{} * { "context"&#58; "staging", "specification"&#58; . }' -o json -I 0 vtex.yml
 
     - name: Set API request payload
       run: echo "API_PAYLOAD='${{steps.build-api-payload.outputs.result}}'" >> $GITHUB_ENV
