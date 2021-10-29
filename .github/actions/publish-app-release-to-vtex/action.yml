@@ -1,0 +1,29 @@
+name: 'Publish an app release to VTEX'
+description: 'Publish an app release to VTEX'
+runs:
+  using: "composite"
+  steps:
+
+    - name: Get app metadata
+      id: app-metadata
+      uses: ./.github/actions/get-vtex-app-metadata
+
+    - name: Set API URL
+      run: echo "API_URL='${{ env.STAGING_API_BASE_URL }}/apps/${{ steps.app-metadata.outputs.app-id }}/releases'" >> $GITHUB_ENV
+      shell: bash
+      env:
+        STAGING_API_BASE_URL: https://appsframework-api-beta.vtex.io
+
+    - name: Build API payload
+      id: build-api-payload
+      uses: mikefarah/yq@v4.11.2
+      with:
+        cmd: yq eval '{} * { "context"&#58; "staging", "specification"&#58; . }' -o json -I -0 vtex.yml
+
+    - name: Set API request payload
+      run: echo "API_PAYLOAD='${{steps.build-api-payload.outputs.result}}'" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Create or update a VTEX service for the service image
+      run: "curl -XPOST -H 'Content-type: application/json' -d '${{ env.API_PAYLOAD }}' '${{ env.API_URL }}'"
+      shell: bash

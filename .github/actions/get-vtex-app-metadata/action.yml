@@ -1,12 +1,18 @@
 name: 'Get VTEX app metadata'
 description: 'Exports VTEX app metadata to the step outputs'
 outputs:
+  app-id:
+    description: "App id"
+    value: ${{ steps.get-app-id.outputs.result }}
   app-name:
     description: "App name"
     value: ${{ steps.get-app-name.outputs.result }}
   app-version:
     description: "App version"
     value: ${{ steps.get-app-version.outputs.result }}
+  vendor-id:
+    description: "Vendor id"
+    value: ${{ steps.get-vendor-id.outputs.result }}
   service-name:
     description: "Service name"
     value: ${{ steps.get-service-folder.outputs.result }}
@@ -20,6 +26,12 @@ runs:
   using: "composite"
   steps:
 
+    - name: Get app id
+      id: get-app-id
+      uses: mikefarah/yq@v4.11.2
+      with:
+        cmd: yq eval '.vendor + "." + .name' 'vtex.yml'
+
     - name: Get app name
       id: get-app-name
       uses: mikefarah/yq@v4.11.2
@@ -31,6 +43,12 @@ runs:
       uses: mikefarah/yq@v4.11.2
       with:
         cmd: yq eval '.version' 'vtex.yml'
+
+    - name: Get vendor id
+      id: get-vendor-id
+      uses: mikefarah/yq@v4.11.2
+      with:
+        cmd: yq eval '.vendor' 'vtex.yml'
 
     - name: Get service folder
       id: get-service-folder
