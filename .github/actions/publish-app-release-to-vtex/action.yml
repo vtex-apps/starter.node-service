@@ -16,7 +16,7 @@ runs:
 
     - name: Build API payload
       id: build-api-payload
-      uses: mikefarah/yq@v4.11.2
+      uses: mikefarah/yq@v4.13.5
       with:
         cmd: yq eval '{} * { "context"&#58; "staging", "specification"&#58; . }' -o json -I 0 vtex.yml
 
