@@ -1,6 +1,6 @@
 {
   "name": "node-template-v2",
-  "version": "0.0.0",
+  "version": "0.0.10",
   "scripts": {
     "start": "tsc && NODE_ENV=production node dist/index.js",
     "build": "tsc",
