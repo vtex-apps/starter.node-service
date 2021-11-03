@@ -12,13 +12,13 @@ runs:
       run: echo "API_URL='${{ env.STAGING_API_BASE_URL }}/apps/${{ steps.app-metadata.outputs.app-id }}/releases'" >> $GITHUB_ENV
       shell: bash
       env:
-        STAGING_API_BASE_URL: https://appsframework-api-beta.vtex.io
+        STAGING_API_BASE_URL: https://apps-framework-api-beta.vtex.io
 
     - name: Build API payload
       id: build-api-payload
       uses: mikefarah/yq@v4.13.5
       with:
-        cmd: "yq eval '{} * { \"context\" : \"staging\", \"specification\" : . }' -o json -I 0 vtex.yml"
+        cmd: "yq eval '{} * { \"context\" : \"staging\", \"appSpecification\" : . }' -o json -I 0 vtex.yml"
 
     - name: Set API request payload
       run: echo API_PAYLOAD='${{steps.build-api-payload.outputs.result}}' >> $GITHUB_ENV
