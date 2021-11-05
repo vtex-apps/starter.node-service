@@ -14,3 +14,4 @@ runs:
       with:
         request-type: create-app-release
         app-specification: ${{steps.app-metadata.outputs.app-specification}}
+        wait-app-release-complete: true
