@@ -1,9 +1,6 @@
 name: 'Publish Docker image to VTEX repo'
 description: 'Publish app Docker images to VTEX repository'
 inputs:
-  app-metadata:
-    description: VTEX app metadata extracted with action get-vtex-app-metadata
-    required: true
   docker-user:
     description: VTEX Docker username
     required: true
@@ -20,7 +17,7 @@ runs:
 
     - name: Get app metadata
       id: app-metadata
-      uses: ./.github/actions/get-vtex-app-metadata
+      uses: vtex/app-metadata-action@main
 
     # https://github.com/docker/login-action
     - name: Log into registry ${{ env.REGISTRY }}

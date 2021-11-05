@@ -6,7 +6,7 @@ runs:
 
     - name: Get app metadata
       id: app-metadata
-      uses: ./.github/actions/get-vtex-app-metadata
+      uses: vtex/app-metadata-action@main
 
     - name: Create or update a VTEX service for the service image
       id: call-create-app-release-api
