@@ -27,7 +27,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Get app metadata
         id: app-metadata
-        uses: ./.github/actions/get-vtex-app-metadata
+        uses: vtex/app-metadata-action@main
       - name: Export env.WORK_DIR as the service path
         run: echo "WORK_DIR=${{ steps.app-metadata.outputs.service-name }}" >> $GITHUB_ENV
       - run: yarn
