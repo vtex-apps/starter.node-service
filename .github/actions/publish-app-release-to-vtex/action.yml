@@ -20,7 +20,7 @@ runs:
 
     - name: Create or update a VTEX service for the service image
       id: call-create-app-release-api
-      uses: ./.github/actions/apps-framework-api-request
+      uses: vtex/apps-framework-request-action@main
       with:
         request-name: create-app-release
         app-specification: ${{ env.API_PAYLOAD }}
