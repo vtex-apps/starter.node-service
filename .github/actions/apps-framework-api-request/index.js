@@ -4,18 +4,22 @@ const axios = require('axios')
 
 const serviceBaseUrl = 'https://apps-framework-api-beta.vtex.io'
 
-try {
-  const requestName = core.getInput('request-name')
-  await executeRequest(requestName)
-} catch (error) {
-  core.setFailed(error.message)
+async function run() {
+  try {
+    const requestName = core.getInput('request-name')
+    await executeRequest(requestName)
+  } catch (error) {
+    core.setFailed(error.message)
+  }
 }
+
+run()
 
 async function executeRequest(requestName) {
   switch (requestName) {
     case 'create-app-release':
-      await executeCreateAppRelease();
-      return;
+      await executeCreateAppRelease()
+      return
     default:
       throw new Error(`Unknown request name: ${requestName}`)
   }
@@ -34,7 +38,9 @@ async function executeCreateAppRelease() {
     console.log('App release published successfully')
   } else {
     core.setOutput(response.status.toString(), 'status-code')
-    core.setFailed(`Failing publishing app. Status code: ${response.status}; Response body: ${response.data}`)
+    core.setFailed(
+      `Failing publishing app. Status code: ${response.status}; Response body: ${response.data}`
+    )
   }
 }
 
