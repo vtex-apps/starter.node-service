@@ -1,14 +1,14 @@
-import { getInput, setFailed, setOutput } from '@actions/core'
-import { yaml } from 'js-yaml'
-import * as axios from 'axios'
+const core = require('@actions/core')
+const yaml = require('js-yaml')
+const axios = require('axios')
 
 const serviceBaseUrl = 'https://apps-framework-api-beta.vtex.io'
 
 try {
-  const requestName = getInput('request-name')
-  await this.executeRequest(requestName)
+  const requestName = core.getInput('request-name')
+  await executeRequest(requestName)
 } catch (error) {
-  setFailed(error.message)
+  core.setFailed(error.message)
 }
 
 async function executeRequest(requestName) {
@@ -30,11 +30,11 @@ async function executeCreateAppRelease() {
   console.log(`Payload: ${JSON.stringify(payload)}`)
   const response = await axios.post(apiUrl, payload)
   if (response.status === 200) {
-    setOutput(response.status.toString(), 'status-code')
+    core.setOutput(response.status.toString(), 'status-code')
     console.log('App release published successfully')
   } else {
-    setOutput(response.status.toString(), 'status-code')
-    setFailed(`Failing publishing app. Status code: ${response.status}; Response body: ${response.data}`)
+    core.setOutput(response.status.toString(), 'status-code')
+    core.setFailed(`Failing publishing app. Status code: ${response.status}; Response body: ${response.data}`)
   }
 }
 
@@ -46,7 +46,7 @@ function buildPayloadForCreateAppRelease(appSpecification) {
 }
 
 function parseAppSpecification() {
-  const rawAppSpecification = getInput('app-specification')
+  const rawAppSpecification = core.getInput('app-specification')
   const appSpecification = yaml.load(rawAppSpecification)
   return appSpecification
 }
