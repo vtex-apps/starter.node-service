@@ -29,7 +29,7 @@ jobs:
         id: app-metadata
         uses: vtex/app-metadata-action@main
       - name: Export env.WORK_DIR as the service path
-        run: echo "WORK_DIR=${{ steps.app-metadata.outputs.service-name }}" >> $GITHUB_ENV
+        run: echo "WORK_DIR=${{ steps.app-metadata.outputs.service-folder }}" >> $GITHUB_ENV
       - run: yarn
         working-directory: ${{ env.WORK_DIR }}
       - run: yarn run lint
