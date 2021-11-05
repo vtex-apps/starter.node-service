@@ -13,4 +13,4 @@ runs:
       uses: vtex/apps-framework-request-action@main
       with:
         request-type: create-app-release
-        app-specification: ${{steps.app-metadata.app-specification.result}}
+        app-specification: ${{steps.app-metadata.outputs.app-specification}}
