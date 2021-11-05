@@ -8,19 +8,9 @@ runs:
       id: app-metadata
       uses: ./.github/actions/get-vtex-app-metadata
 
-    - name: Build API payload
-      id: build-api-payload
-      uses: mikefarah/yq@v4.13.5
-      with:
-        cmd: "yq eval '.' -o json -I 0 vtex.yml"
-
-    - name: Set API request payload
-      run: echo API_PAYLOAD='${{steps.build-api-payload.outputs.result}}' >> $GITHUB_ENV
-      shell: bash
-
     - name: Create or update a VTEX service for the service image
       id: call-create-app-release-api
       uses: vtex/apps-framework-request-action@main
       with:
-        request-name: create-app-release
-        app-specification: ${{ env.API_PAYLOAD }}
+        request-type: create-app-release
+        app-specification: ${{steps.app-metadata.app-specification.result}}

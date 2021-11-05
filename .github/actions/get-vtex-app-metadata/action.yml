@@ -10,6 +10,9 @@ outputs:
   app-version:
     description: "App version"
     value: ${{ steps.get-app-version.outputs.result }}
+  app-specification:
+    description: "App specification in JSON format"
+    value: ${{ steps.get-app-specification.outputs.result }}
   vendor-id:
     description: "Vendor id"
     value: ${{ steps.get-vendor-id.outputs.result }}
@@ -61,3 +64,9 @@ runs:
       uses: mikefarah/yq@v4.13.5
       with:
         cmd: yq eval '.services[0].image-name' 'vtex.yml'
+
+    - name: Get app specification
+      id: get-app-specification
+      uses: mikefarah/yq@v4.13.5
+      with:
+        cmd: "yq eval '.' -o json -I 0 vtex.yml"
