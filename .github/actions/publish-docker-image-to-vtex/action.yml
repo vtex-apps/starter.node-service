@@ -34,7 +34,7 @@ runs:
       uses: docker/metadata-action@v3.4.1
       with:
         images: ${{ env.REGISTRY }}/${{ env.service-image-name }}
-        tags: type=semver,pattern={{raw}},value=${{ env.next-app-version }}
+        tags: type=semver,pattern={{raw}},value=${{ steps.app-metadata.outputs.next-app-version }}
       env:
         service-image-name: ${{ steps.app-metadata.outputs.service-image-name }}
         app-version: ${{ steps.app-metadata.outputs.next-app-version }}
