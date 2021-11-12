@@ -11,7 +11,7 @@ inputs:
     description: 'Indicates the type of release that will be created: development, unpublished, or published'
     required: false
     default: 'development'
-  version-increment-scope:
+  version-increment-type:
     description: 'Indicates the type of change that of change that is being done, accepting: major, minor, patch'
     required: false
     default: 'patch'
@@ -28,7 +28,7 @@ runs:
       uses: vtex/app-metadata-action@main
       with:
         release-type: ${{ inputs.release-type }}
-        version-increment-scope: ${{ inputs.version-increment-scope }}
+        version-increment-type: ${{ inputs.version-increment-type }}
 
     # https://github.com/docker/login-action
     - name: Log into registry ${{ env.REGISTRY }}

@@ -12,7 +12,7 @@ inputs:
     description: 'Indicates the type of release that will be created: development, unpublished, or published'
     required: false
     default: 'development'
-  version-increment-scope:
+  version-increment-type:
     description: 'Indicates the type of change that of change that is being done, accepting: major, minor, patch'
     required: false
     default: 'patch'
@@ -28,11 +28,11 @@ runs:
         docker-user: ${{ inputs.docker-user }}
         docker-token: ${{ inputs.docker-token }}
         release-type: ${{ inputs.release-type }}
-        version-increment-scope: ${{ inputs.version-increment-scope }}
+        version-increment-type: ${{ inputs.version-increment-type }}
 
     - name: Release the current app version to VTEX in staging environment
       id: release-app-staging
       uses: ./.github/actions/publish-app-release-to-vtex
       with:
         release-type: ${{ inputs.release-type }}
-        version-increment-scope: ${{ inputs.version-increment-scope }}
+        version-increment-type: ${{ inputs.version-increment-type }}
