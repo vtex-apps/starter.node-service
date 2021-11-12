@@ -28,11 +28,11 @@ runs:
         docker-user: ${{ inputs.docker-user }}
         docker-token: ${{ inputs.docker-token }}
         release-type: ${{ inputs.release-type }}
-        version-increment-scope: ${{ inputs.version-increment-type }}
+        version-increment-scope: ${{ inputs.version-increment-scope }}
 
     - name: Release the current app version to VTEX in staging environment
       id: release-app-staging
       uses: ./.github/actions/publish-app-release-to-vtex
       with:
         release-type: ${{ inputs.release-type }}
-        version-increment-scope: ${{ inputs.version-increment-type }}
+        version-increment-scope: ${{ inputs.version-increment-scope }}
