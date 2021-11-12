@@ -10,7 +10,7 @@ on:
     branches: '*'
 
 jobs:
-  test-lint:
+  test:
     name: lint, test, and build
     runs-on: ${{ matrix.os }}
 
@@ -38,3 +38,35 @@ jobs:
         working-directory: ${{ env.WORK_DIR }}
       - run: yarn run build
         working-directory: ${{ env.WORK_DIR }}
+
+  publish-on-success:
+
+    runs-on: ubuntu-latest
+
+    needs: test
+    if: ${{ success() }}
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: set-release-type-to-unpublished
+        if: ${{ env.GITHUB_EVENT_NAME == 'push' && GITHUB_REF_NAME == 'main' }}
+        run: echo "APP_RELEASE_TYPE=unpublished" >> $GITHUB_ENV
+
+      - name: set-release-type-to-development
+        if: ${{ !(env.GITHUB_EVENT_NAME == 'push' && GITHUB_REF_NAME == 'main') }}
+        run: echo "APP_RELEASE_TYPE=development" >> $GITHUB_ENV
+
+      - name: Publish app version to VTEX
+        id: publish-to-vtex
+        uses: ./.github/actions/publish-to-vtex
+        with:
+          docker-user: ${{ secrets.DOCKER_USER }}
+          docker-token: ${{ secrets.DOCKER_TOKEN }}
+          release-type: ${{ env.APP_RELEASE_TYPE }}
+          version-increment-scope: 'patch'

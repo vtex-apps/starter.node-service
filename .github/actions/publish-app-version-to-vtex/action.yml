@@ -1,0 +1,32 @@
+name: 'Publish an app version to VTEX'
+description: 'Publish an app version to VTEX'
+
+inputs:
+  release-type:
+    description: 'Indicates the type of release that will be created: development, unpublished, or published'
+    required: false
+    default: 'development'
+  version-increment-scope:
+    description: 'Indicates the type of change that of change that is being done, accepting: major, minor, patch'
+    required: false
+    default: 'patch'
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Get app metadata
+      id: app-metadata
+      uses: vtex/app-metadata-action@main
+      with:
+        release-type: ${{ inputs.release-type }}
+        version-increment-scope: ${{ inputs.version-increment-type }}
+
+
+    - name: Create or update a VTEX service for the service image
+      id: call-create-app-release-api
+      uses: vtex/apps-framework-request-action@main
+      with:
+        request-type: create-app-release
+        app-specification: ${{steps.app-metadata.outputs.next-app-specification}}
+        wait-app-release-complete: true

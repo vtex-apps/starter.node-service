@@ -1,0 +1,38 @@
+name: 'Publish a new app version to VTEX'
+description: 'Publish a new app version to VTEX'
+
+inputs:
+  docker-user:
+    description: VTEX Docker username
+    required: true
+  docker-token:
+    description: VTEX Docker token
+    required: true
+  release-type:
+    description: 'Indicates the type of release that will be created: development, unpublished, or published'
+    required: false
+    default: 'development'
+  version-increment-scope:
+    description: 'Indicates the type of change that of change that is being done, accepting: major, minor, patch'
+    required: false
+    default: 'patch'
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Publish app services to VTEX Docker repository
+      id: publish-docker-images
+      uses: ./.github/actions/publish-docker-image-to-vtex
+      with:
+        docker-user: ${{ inputs.docker-user }}
+        docker-token: ${{ inputs.docker-token }}
+        release-type: ${{ inputs.release-type }}
+        version-increment-scope: ${{ inputs.version-increment-type }}
+
+    - name: Release the current app version to VTEX in staging environment
+      id: release-app-staging
+      uses: ./.github/actions/publish-app-release-to-vtex
+      with:
+        release-type: ${{ inputs.release-type }}
+        version-increment-scope: ${{ inputs.version-increment-type }}
