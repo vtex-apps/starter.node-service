@@ -20,7 +20,7 @@ runs:
       uses: vtex/app-metadata-action@main
       with:
         release-type: ${{ inputs.release-type }}
-        version-increment-scope: ${{ inputs.version-increment-type }}
+        version-increment-scope: ${{ inputs.version-increment-scope }}
 
 
     - name: Create or update a VTEX service for the service image

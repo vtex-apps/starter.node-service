@@ -28,7 +28,7 @@ runs:
       uses: vtex/app-metadata-action@main
       with:
         release-type: ${{ inputs.release-type }}
-        version-increment-scope: ${{ inputs.version-increment-type }}
+        version-increment-scope: ${{ inputs.version-increment-scope }}
 
     # https://github.com/docker/login-action
     - name: Log into registry ${{ env.REGISTRY }}
