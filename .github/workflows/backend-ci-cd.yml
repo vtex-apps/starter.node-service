@@ -55,11 +55,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: set-release-type-to-unpublished
-        if: ${{ env.GITHUB_EVENT_NAME == 'push' && GITHUB_REF_NAME == 'main' }}
+        if: ${{ env.GITHUB_EVENT_NAME == 'push' && env.GITHUB_REF_NAME == 'main' }}
         run: echo "APP_RELEASE_TYPE=unpublished" >> $GITHUB_ENV
 
       - name: set-release-type-to-development
-        if: ${{ !(env.GITHUB_EVENT_NAME == 'push' && GITHUB_REF_NAME == 'main') }}
+        if: ${{ !(env.GITHUB_EVENT_NAME == 'push' && env.GITHUB_REF_NAME == 'main') }}
         run: echo "APP_RELEASE_TYPE=development" >> $GITHUB_ENV
 
       - name: Publish app version to VTEX
