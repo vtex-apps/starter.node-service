@@ -7,12 +7,12 @@ inputs:
   docker-token:
     description: VTEX Docker token
     required: true
-  version-type:
-    description: 'Indicates the type of version that will be created: development, unpublished, or published'
+  version-visibility:
+    description: 'Indicates the version visibility that will be used: development, unpublished, or published'
     required: false
     default: 'development'
   version-increment-type:
-    description: 'Indicates the type of change that of change that is being done, accepting: major, minor, patch'
+    description: 'Indicates the type of change that is being done, accepting: major, minor, patch'
     required: false
     default: 'patch'
 runs:
@@ -27,7 +27,7 @@ runs:
       id: app-metadata
       uses: vtex/app-metadata-action@main
       with:
-        version-type: ${{ inputs.version-type }}
+        version-visibility: ${{ inputs.version-visibility }}
         version-increment-type: ${{ inputs.version-increment-type }}
 
     # https://github.com/docker/login-action

@@ -54,13 +54,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: set-version-type-to-unpublished
+      - name: set-version-visibility-to-unpublished
         if: ${{ env.GITHUB_EVENT_NAME == 'push' && env.GITHUB_REF_NAME == 'main' }}
-        run: echo "APP_VERSION_TYPE=unpublished" >> $GITHUB_ENV
+        run: echo "APP_VERSION_VISIBILITY=unpublished" >> $GITHUB_ENV
 
-      - name: set-version-type-to-development
+      - name: set-version-visibility-to-development
         if: ${{ !(env.GITHUB_EVENT_NAME == 'push' && env.GITHUB_REF_NAME == 'main') }}
-        run: echo "APP_VERSION_TYPE=development" >> $GITHUB_ENV
+        run: echo "APP_VERSION_VISIBILITY=development" >> $GITHUB_ENV
 
       - name: Publish app version to VTEX
         id: publish-to-vtex
@@ -68,5 +68,5 @@ jobs:
         with:
           docker-user: ${{ secrets.DOCKER_USER }}
           docker-token: ${{ secrets.DOCKER_TOKEN }}
-          version-type: ${{ env.APP_VERSION_TYPE }}
+          version-visibility: ${{ env.APP_VERSION_VISIBILITY }}
           version-increment-type: 'patch'
