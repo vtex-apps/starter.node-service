@@ -2,8 +2,8 @@ name: 'Publish an app version to VTEX'
 description: 'Publish an app version to VTEX'
 
 inputs:
-  release-type:
-    description: 'Indicates the type of release that will be created: development, unpublished, or published'
+  version-type:
+    description: 'Indicates the type of version that will be created: development, unpublished, or published'
     required: false
     default: 'development'
   version-increment-type:
@@ -19,14 +19,14 @@ runs:
       id: app-metadata
       uses: vtex/app-metadata-action@main
       with:
-        release-type: ${{ inputs.release-type }}
+        version-type: ${{ inputs.version-type }}
         version-increment-type: ${{ inputs.version-increment-type }}
 
 
     - name: Create or update a VTEX service for the service image
-      id: call-create-app-release-api
+      id: call-create-app-version-api
       uses: vtex/apps-framework-request-action@main
       with:
-        request-type: create-app-release
+        request-type: create-app-version
         app-specification: ${{steps.app-metadata.outputs.next-app-specification}}
-        wait-app-release-complete: true
+        wait-app-version-complete: true

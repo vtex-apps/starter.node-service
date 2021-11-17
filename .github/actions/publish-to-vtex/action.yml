@@ -8,8 +8,8 @@ inputs:
   docker-token:
     description: VTEX Docker token
     required: true
-  release-type:
-    description: 'Indicates the type of release that will be created: development, unpublished, or published'
+  version-type:
+    description: 'Indicates the type of version that will be created: development, unpublished, or published'
     required: false
     default: 'development'
   version-increment-type:
@@ -27,12 +27,12 @@ runs:
       with:
         docker-user: ${{ inputs.docker-user }}
         docker-token: ${{ inputs.docker-token }}
-        release-type: ${{ inputs.release-type }}
+        version-type: ${{ inputs.version-type }}
         version-increment-type: ${{ inputs.version-increment-type }}
 
-    - name: Release the current app version to VTEX in staging environment
+    - name: Release the current app version to VTEX
       id: release-app-staging
-      uses: ./.github/actions/publish-app-release-to-vtex
+      uses: ./.github/actions/publish-app-version-to-vtex
       with:
-        release-type: ${{ inputs.release-type }}
+        version-type: ${{ inputs.version-type }}
         version-increment-type: ${{ inputs.version-increment-type }}
