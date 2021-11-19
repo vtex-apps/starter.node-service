@@ -54,10 +54,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: debug-events
-        run: echo "${{ github.event_name }} and ${{ github.ref_name }} and ${{ github.ref }}"
-
-
       - name: set-version-visibility-to-unpublished
         if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
         run: echo "APP_VERSION_VISIBILITY=unpublished" >> $GITHUB_ENV

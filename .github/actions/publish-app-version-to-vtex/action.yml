@@ -30,3 +30,4 @@ runs:
         request-type: create-app-version
         app-specification: ${{steps.app-metadata.outputs.next-app-specification}}
         wait-app-version-complete: true
+        version-visibility: ${{ inputs.version-visibility }}
