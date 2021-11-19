@@ -55,15 +55,15 @@ jobs:
         uses: actions/checkout@v2
 
       - name: debug-events
-        run: echo "${{ env.GITHUB_EVENT_NAME}} and ${{ env.GITHUB_REF_NAME }} and ${{ env.GITHUB_REF }}"
+        run: echo "${{ github.event_name }} and ${{ github.ref_name }} and ${{ github.ref }}"
 
 
       - name: set-version-visibility-to-unpublished
-        if: ${{ env.GITHUB_EVENT_NAME == 'push' && env.GITHUB_REF_NAME == 'main' }}
+        if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
         run: echo "APP_VERSION_VISIBILITY=unpublished" >> $GITHUB_ENV
 
       - name: set-version-visibility-to-development
-        if: ${{ !(env.GITHUB_EVENT_NAME == 'push' && env.GITHUB_REF_NAME == 'main') }}
+        if: ${{ !(github.event_name == 'push' && github.ref_name == 'main') }}
         run: echo "APP_VERSION_VISIBILITY=development" >> $GITHUB_ENV
 
       - name: Publish app version to VTEX
