@@ -55,7 +55,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: debug-events
-        run: echo "${{ env.GITHUB_EVENT_NAME}} and ${{ env.GITHUB_REF_NAME }} and ${{ GITHUB_REF }}"
+        run: echo "${{ env.GITHUB_EVENT_NAME}} and ${{ env.GITHUB_REF_NAME }} and ${{ env.GITHUB_REF }}"
 
 
       - name: set-version-visibility-to-unpublished
