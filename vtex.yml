@@ -1,6 +1,6 @@
 name: starter-node-service
 vendor: vtex
-version: 0.0.10
+version: 0.0.11
 
 services:
 - name: service
