@@ -20,7 +20,7 @@ runs:
   steps:
 
     - name: Set VTEX repository address
-      run: echo "REGISTRY=vtexalpha1.jfrog.io" >> $GITHUB_ENV
+      run: echo "REGISTRY=vtexapps.jfrog.io" >> $GITHUB_ENV
       shell: bash
 
     - name: Get app metadata
