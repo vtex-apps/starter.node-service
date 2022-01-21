@@ -1,6 +1,6 @@
 name: starter-node-service
 vendor: extensions
-version: 0.0.15
+version: 0.0.16
 
 services:
 - name: service
