@@ -1,5 +1,5 @@
 name: starter-node-service
-vendor: vtex
+vendor: extensions
 version: 0.0.13
 
 services:
