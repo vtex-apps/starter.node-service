@@ -66,6 +66,8 @@ jobs:
         id: publish-to-vtex
         uses: ./.github/actions/publish-to-vtex
         with:
+          vtex-app-key: ${{ secrets.VTEX_APP_KEY }}
+          vtex-app-token: ${{ secrets.VTEX_APP_TOKEN }}
           docker-user: ${{ secrets.DOCKER_USER }}
           docker-token: ${{ secrets.DOCKER_TOKEN }}
           version-visibility: ${{ env.APP_VERSION_VISIBILITY }}

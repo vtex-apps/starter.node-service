@@ -1,6 +1,6 @@
 {
-  "name": "node-template-v2",
-  "version": "0.0.12",
+  "name": "vtex-app-node-server-template",
+  "version": "0.0.13",
   "scripts": {
     "start": "tsc && NODE_ENV=production node dist/index.js",
     "build": "tsc",
