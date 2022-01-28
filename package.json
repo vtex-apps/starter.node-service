@@ -13,8 +13,10 @@
   "dependencies": {
     "@jest/types": "^27.0.6",
     "@koa/cors": "^3.1.0",
-    "http-status-codes": "^2.1.4",
+    "axios": "^0.25.0",
+    "dotenv": "^14.3.2",
     "graphql": "^15.5.1",
+    "http-status-codes": "^2.1.4",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-graphql": "^0.9.0",
