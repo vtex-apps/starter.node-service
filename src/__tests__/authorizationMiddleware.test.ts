@@ -1,6 +1,6 @@
 import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
-import type { BaseContext } from 'koa'
+import type { ExtendableContext } from 'koa'
 
 import type { ValidateCredentialsPayload } from '../utils/authorizationMiddleware'
 import authorization from '../utils/authorizationMiddleware'
@@ -34,7 +34,7 @@ describe('Authorization Middleware', () => {
     process.env.VTEX_APP_TOKEN = thisAppToken
     const authorizationToken = 'token'
 
-    const ctx: Partial<BaseContext> = {
+    const ctx: Partial<ExtendableContext> = {
       status: undefined,
       headers: { authorization: authorizationToken },
     }
@@ -43,7 +43,7 @@ describe('Authorization Middleware', () => {
 
     mockedAxios.post.mockResolvedValue({ status: 200 })
 
-    await authorization(ctx as BaseContext, jest.fn())
+    await authorization(ctx as ExtendableContext, jest.fn())
 
     const data = mock.calls[0][1] as ValidateCredentialsPayload
     const { headers } = mock.calls[0][2] as AxiosRequestConfig
