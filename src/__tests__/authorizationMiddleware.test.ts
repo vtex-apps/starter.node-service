@@ -21,6 +21,7 @@ describe('Authorization Middleware', () => {
       status: null,
       headers: { authorization: null },
       throw: jest.fn(),
+      cookies: { get: jest.fn() },
     }
 
     mockedAxios.post.mockResolvedValue({ status: 400 })
@@ -67,6 +68,7 @@ describe('Authorization Middleware', () => {
         vtexAppKey: thirdPartyAppKey,
         vtexAppToken: thirdPartyAppToken,
       },
+      cookies: { get: jest.fn() },
     }
 
     const { mock } = mockedAxios.post
