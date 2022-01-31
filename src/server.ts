@@ -9,13 +9,13 @@ import authorization from './utils/authorizationMiddleware'
 dotenv.config({ path: './src/.env' })
 const router = new Router()
 
-router.use(['/private'], authorization)
-
 const ROUTES = {
   base: '/',
   healthcheck: '/healthcheck',
   private: '/private',
 }
+
+router.use([ROUTES.private], authorization)
 
 router.get(ROUTES.base, IndexController.getIndex)
 router.get(ROUTES.healthcheck, HealthCheckController.getHealthCheck)

@@ -1,39 +1,58 @@
+import { StatusCodes } from 'http-status-codes'
 import type { BaseContext, Next } from 'koa'
 import axios from 'axios'
 
 const authorization = async (ctx: BaseContext, next: Next) => {
-  // TODO migrar middleware para lib npm
+  // TODO migrate middleware to npm lib
+  const CREDENTIALS_VALIDATION_ENDPOINT = '/auth/users/validate'
 
   const headers = {
-    'x-vtex-api-appkey': process.env.VTEXAPPKEY ?? '',
-    'x-vtex-api-apptoken': process.env.VTEXAPPTOKEN ?? '',
+    'x-vtex-api-appkey': process.env.VTEX_APP_KEY ?? '',
+    'x-vtex-api-apptoken': process.env.VTEX_APP_TOKEN ?? '',
   }
 
-  let data = {}
+  const data = createDataFromRequesterCredentials(ctx)
+
+  const request = await axios.post(CREDENTIALS_VALIDATION_ENDPOINT, data, {
+    headers,
+    baseURL: process.env.APPS_FRAMEWORK_API_HOST,
+    responseType: 'json',
+  })
+
+  if (request.status !== StatusCodes.OK) {
+    ctx.throw(StatusCodes.FORBIDDEN)
+  }
+
+  await next()
+}
+
+function createDataFromRequesterCredentials(
+  ctx: BaseContext
+): ValidateCredentialsPayload {
+  let data: ValidateCredentialsPayload = {}
 
   if (ctx.headers.authorization) {
     data = {
       authToken: ctx.headers.authorization,
     }
+  } else if (ctx.headers.vtexidclientauthcookie) {
+    data = {
+      authToken: ctx.headers.vtexidclientauthcookie as string,
+    }
   } else if (ctx.headers.vtexAppKey && ctx.headers.vtexAppToken) {
     data = {
-      vtexAppKey: ctx.headers.vtexAppKey,
-      vtexAppToken: ctx.headers.vtexAppToken,
+      vtexAppKey: ctx.headers.vtexAppKey as string,
+      vtexAppToken: ctx.headers.vtexAppToken as string,
     }
   }
 
-  const request = await axios.post('/auth/users/validate', {
-    headers,
-    data,
-    baseURL: process.env.APPS_FRAMEWORK_API_HOST,
-    responseType: 'json',
-  })
+  return data
+}
 
-  if (request.status !== 200) {
-    ctx.throw(403)
-  }
-
-  await next()
+export interface ValidateCredentialsPayload {
+  authToken?: string
+  vtexAppKey?: string
+  vtexAppToken?: string
 }
 
 export default authorization
