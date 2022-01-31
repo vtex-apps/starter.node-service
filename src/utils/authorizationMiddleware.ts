@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
-import type { BaseContext, Next } from 'koa'
+import type { Next, ExtendableContext } from 'koa'
 import axios from 'axios'
 
-const authorization = async (ctx: BaseContext, next: Next) => {
+const authorization = async (ctx: ExtendableContext, next: Next) => {
   // TODO migrate middleware to npm lib
   const CREDENTIALS_VALIDATION_ENDPOINT = '/auth/users/validate'
 
@@ -27,7 +27,7 @@ const authorization = async (ctx: BaseContext, next: Next) => {
 }
 
 function createDataFromRequesterCredentials(
-  ctx: BaseContext
+  ctx: ExtendableContext
 ): ValidateCredentialsPayload {
   let data: ValidateCredentialsPayload = {}
 
@@ -38,6 +38,10 @@ function createDataFromRequesterCredentials(
   } else if (ctx.headers.vtexidclientautcookie) {
     data = {
       authToken: ctx.headers.vtexidclientautcookie as string,
+    }
+  } else if (ctx.cookies.get('VtexIdclientAutCookie')) {
+    data = {
+      authToken: ctx.cookies.get('VtexIdclientAutCookie') as string,
     }
   } else if (ctx.headers.vtexAppKey && ctx.headers.vtexAppToken) {
     data = {
