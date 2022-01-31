@@ -35,9 +35,9 @@ function createDataFromRequesterCredentials(
     data = {
       authToken: ctx.headers.authorization,
     }
-  } else if (ctx.headers.vtexidclientauthcookie) {
+  } else if (ctx.headers.vtexidclientautcookie) {
     data = {
-      authToken: ctx.headers.vtexidclientauthcookie as string,
+      authToken: ctx.headers.vtexidclientautcookie as string,
     }
   } else if (ctx.headers.vtexAppKey && ctx.headers.vtexAppToken) {
     data = {
