@@ -17,16 +17,16 @@ describe('Authorization Middleware', () => {
   })
 
   it('throw 403', async () => {
-    const ctx = {
-      status: null,
-      headers: { authorization: null },
-      throw: jest.fn(),
-      cookies: { get: jest.fn() },
+    const ctx: Partial<Context> = {
+      status: undefined,
+      headers: { authorization: undefined },
+      throw: jest.fn() as any,
+      cookies: { get: jest.fn() } as any,
     }
 
     mockedAxios.post.mockResolvedValue({ status: 400 })
 
-    await authorization(ctx as never, jest.fn())
+    await authorization(ctx as Context, jest.fn())
     expect(ctx.throw).toBeCalledWith(403)
   })
 
@@ -62,20 +62,20 @@ describe('Authorization Middleware', () => {
     const thirdPartyAppKey = 'thirdPartyAppKey'
     const thirdPartyAppToken = 'thirdPartyAppToken'
 
-    const ctx = {
-      status: null,
+    const ctx: Partial<Context> = {
+      status: undefined,
       headers: {
         vtexAppKey: thirdPartyAppKey,
         vtexAppToken: thirdPartyAppToken,
       },
-      cookies: { get: jest.fn() },
+      cookies: { get: jest.fn() } as any,
     }
 
     const { mock } = mockedAxios.post
 
     mockedAxios.post.mockResolvedValue({ status: 200 })
 
-    await authorization(ctx as never, jest.fn())
+    await authorization(ctx as Context, jest.fn())
 
     const data = mock.calls[0][1] as ValidateCredentialsPayload
     const { headers } = mock.calls[0][2] as AxiosRequestConfig
