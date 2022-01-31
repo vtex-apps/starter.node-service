@@ -42,7 +42,9 @@ describe('Private Route', () => {
     const response = await request(app.callback()).get('/private')
 
     expect(response.status).toBe(StatusCodes.OK)
-    expect(response.text).toBe('This is a private route')
+    expect(response.text).toBe(
+      'This is a private route. It requires valid credentials in order to access it'
+    )
   })
 
   it('returns status code 403 when external validation of credential fails', async () => {
