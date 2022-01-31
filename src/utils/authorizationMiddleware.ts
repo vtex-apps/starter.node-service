@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
-import type { Next, ExtendableContext } from 'koa'
+import type { Next, Context } from 'koa'
 import axios from 'axios'
 
-const authorization = async (ctx: ExtendableContext, next: Next) => {
+const authorization = async (ctx: Context, next: Next) => {
   // TODO migrate middleware to npm lib
   const CREDENTIALS_VALIDATION_ENDPOINT = '/auth/users/validate'
 
@@ -27,7 +27,7 @@ const authorization = async (ctx: ExtendableContext, next: Next) => {
 }
 
 function createDataFromRequesterCredentials(
-  ctx: ExtendableContext
+  ctx: Context
 ): ValidateCredentialsPayload {
   let data: ValidateCredentialsPayload = {}
 
