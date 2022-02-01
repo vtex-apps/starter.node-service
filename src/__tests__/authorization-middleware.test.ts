@@ -2,8 +2,8 @@ import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import type { Context } from 'koa'
 
-import type { ValidateCredentialsPayload } from '../utils/authorizationMiddleware'
-import authorization from '../utils/authorizationMiddleware'
+import type { ValidateCredentialsPayload } from '../middlewares/authorization-middleware'
+import authorization from '../middlewares/authorization-middleware'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>

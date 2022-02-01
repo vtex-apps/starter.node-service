@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import IndexController from './controllers/index.controller'
 import HealthCheckController from './controllers/healthcheck.controller'
 import PrivateController from './controllers/private.controller'
-import authorization from './utils/authorizationMiddleware'
+import authorization from './middlewares/authorization-middleware'
 
 dotenv.config({ path: './src/.env' })
 const router = new Router()
