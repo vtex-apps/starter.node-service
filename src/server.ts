@@ -1,24 +1,37 @@
+import Koa from 'koa'
 import Router from 'koa-router'
-import dotenv from 'dotenv'
+// import graphqlHTTP from 'koa-graphql'
 
-import IndexController from './controllers/index.controller'
-import HealthCheckController from './controllers/healthcheck.controller'
-import PrivateController from './controllers/private.controller'
-import authorization from './middlewares/authorization-middleware'
+// import { GraphqlSchema } from './graphql/graphql.schema'
+// import { graphQlResolvers } from './graphql/resolvers/graphql.resolvers'
+import { ROUTES } from './routes'
+// import configuration from './utils/configuration.utils'
+import { configureRoutes } from './utils/route.utils'
+import { configureDefaultMiddlewares } from './middlewares'
 
-dotenv.config({ path: './src/.env' })
+const app = new Koa()
+const port = process.env.PORT ?? 8080
+
+configureDefaultMiddlewares(app)
+configureRoutes(app, ROUTES)
+
 const router = new Router()
 
-const ROUTES = {
-  base: '/',
-  healthcheck: '/healthcheck',
-  private: '/private',
-}
+app.use(router.routes())
 
-router.use([ROUTES.private], authorization)
+// router.all(
+//   '/graphql',
+//   graphqlHTTP({
+//     schema: GraphqlSchema,
+//     rootValue: graphQlResolvers,
+//     graphiql: !configuration.isProd(),
+//   })
+// )
 
-router.get(ROUTES.base, IndexController.getIndex)
-router.get(ROUTES.healthcheck, HealthCheckController.getHealthCheck)
-router.get(ROUTES.private, PrivateController.getPrivate)
+// app.use(router.routes()).use(router.allowedMethods())
 
-export default router
+const server = app.listen(port, () => {
+  console.log(`App listening on the port ${port}`)
+})
+
+export { app, server }
