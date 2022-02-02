@@ -1,21 +1,6 @@
-// eslint-disable-next-line import/no-duplicates
 import type { Context, Next } from 'koa'
-// eslint-disable-next-line import/no-duplicates
-import type {
-  ClientsConfig,
-  IOClients,
-  ParamsContext,
-  RecorderState,
-  RouteHandler,
-  ServiceRoute,
-} from '@vtex/api'
 import { ACCOUNT_HEADER, CREDENTIAL_HEADER } from '@vtex/api'
 import { TracerSingleton } from '@vtex/api/lib/service/tracing/TracerSingleton'
-import { createTokenBucket } from '@vtex/api/lib/service/worker/runtime/utils/tokenBucket'
-import {
-  createPublicHttpRoute,
-  createPrivateHttpRoute,
-} from '@vtex/api/lib/service/worker/runtime/http/index'
 import { addTracingMiddleware } from '@vtex/api/lib/service/tracing/tracingMiddlewares'
 import bodyParser from 'koa-bodyparser'
 import cors from '@koa/cors'
@@ -24,9 +9,6 @@ import json from 'koa-json'
 import logger from 'koa-logger'
 
 import configuration from '../utils/configuration.utils'
-import authorization from './authorization-middleware'
-
-const globalLimiter = createTokenBucket()
 
 const fetchAppToken = async (ctx: Context, next: Next) => {
   const { header } = ctx.request
@@ -57,53 +39,4 @@ export const defaultMiddlewares = () => {
   }
 
   return middlewares
-}
-
-export const configurePublicRoute = <
-  T extends IOClients,
-  U extends RecorderState,
-  V extends ParamsContext
->(
-  routeConfig: RouteConfiguration<T, U, V>
-) => {
-  const { clients, route, routeId, serviceHandler } = routeConfig
-
-  return createPublicHttpRoute(
-    clients,
-    serviceHandler,
-    route,
-    routeId,
-    globalLimiter
-  )
-}
-
-export const configurePrivateRoute = <
-  T extends IOClients,
-  U extends RecorderState,
-  V extends ParamsContext
->(
-  routeConfig: RouteConfiguration<T, U, V>
-) => {
-  const { clients, route, routeId, serviceHandler } = routeConfig
-
-  const middlewares = [authorization, serviceHandler as RouteHandler<T, U, V>]
-
-  return createPrivateHttpRoute(
-    clients,
-    middlewares,
-    route,
-    routeId,
-    globalLimiter
-  )
-}
-
-export interface RouteConfiguration<
-  T extends IOClients,
-  U extends RecorderState,
-  V extends ParamsContext
-> {
-  clients: ClientsConfig<T>
-  serviceHandler: RouteHandler<T, U, V> | Array<RouteHandler<T, U, V>>
-  route: ServiceRoute
-  routeId: string
 }

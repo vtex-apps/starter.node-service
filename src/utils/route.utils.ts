@@ -1,8 +1,14 @@
-import type { ClientsConfig, RouteHandler, ServiceContext } from '@vtex/api'
+import type { ClientsConfig, RouteHandler } from '@vtex/api'
 import { IOClients } from '@vtex/api'
-import type { ComposedMiddleware } from 'koa-compose'
+import { createTokenBucket } from '@vtex/api/lib/service/worker/runtime/utils/tokenBucket'
+import {
+  createPublicHttpRoute,
+  createPrivateHttpRoute,
+} from '@vtex/api/lib/service/worker/runtime/http/index'
 
-import { configurePrivateRoute, configurePublicRoute } from '../middlewares'
+import authorization from '../middlewares/authorization-middleware'
+
+const globalLimiter = createTokenBucket()
 
 const defaultClients: ClientsConfig = {
   options: {
@@ -28,28 +34,32 @@ export function publicRoute(
   routeId: string,
   path: string,
   handler: RouteHandler
-): ComposedMiddleware<ServiceContext> {
-  return configurePublicRoute({
-    clients: clientConfig,
-    route: {
-      path,
-    },
+) {
+  const route = { path }
+
+  return createPublicHttpRoute(
+    clientConfig,
+    handler,
+    route,
     routeId,
-    serviceHandler: handler,
-  })
+    globalLimiter
+  )
 }
 
 export function privateRoute(
   routeId: string,
   path: string,
   handler: RouteHandler
-): ComposedMiddleware<ServiceContext> {
-  return configurePrivateRoute({
-    clients: clientConfig,
-    route: {
-      path,
-    },
+) {
+  const route = { path }
+
+  const middlewares = [authorization, handler]
+
+  return createPrivateHttpRoute(
+    clientConfig,
+    middlewares,
+    route,
     routeId,
-    serviceHandler: handler,
-  })
+    globalLimiter
+  )
 }
