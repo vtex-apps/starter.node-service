@@ -1,21 +1,17 @@
 import Koa from 'koa'
-import Router from 'koa-router'
 // import graphqlHTTP from 'koa-graphql'
 
 // import { GraphqlSchema } from './graphql/graphql.schema'
 // import { graphQlResolvers } from './graphql/resolvers/graphql.resolvers'
-import { ROUTES } from './routes'
-// import configuration from './utils/configuration.utils'
-import { configureRoutes } from './utils/route.utils'
-import { configureDefaultMiddlewares } from './middlewares'
+import { defaultMiddlewares } from './middlewares'
+import router from './routes'
 
 const app = new Koa()
 const port = process.env.PORT ?? 8080
 
-configureDefaultMiddlewares(app)
-configureRoutes(app, ROUTES)
+const middlewares = defaultMiddlewares()
 
-const router = new Router()
+middlewares.forEach((middleware) => app.use(middleware))
 
 app.use(router.routes())
 

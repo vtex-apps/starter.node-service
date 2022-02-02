@@ -1,23 +1,8 @@
-import type {
-  ClientsConfig,
-  ParamsContext,
-  RecorderState,
-  RouteHandler,
-  ServiceRoute,
-} from '@vtex/api'
+import type { ClientsConfig, RouteHandler, ServiceContext } from '@vtex/api'
 import { IOClients } from '@vtex/api'
-import type Koa from 'koa'
+import type { ComposedMiddleware } from 'koa-compose'
 
 import { configurePrivateRoute, configurePublicRoute } from '../middlewares'
-
-export interface RouteConfig<
-  T extends IOClients,
-  U extends RecorderState,
-  V extends ParamsContext
-> {
-  route: ServiceRoute
-  handler: RouteHandler<T, U, V> | Array<RouteHandler<T, U, V>>
-}
 
 const defaultClients: ClientsConfig = {
   options: {
@@ -39,27 +24,32 @@ const clientConfig: ClientsConfig = {
   options: defaultClients.options,
 }
 
-export const configureRoutes = (
-  app: Koa,
-  routes: Record<string, RouteConfig<IOClients, RecorderState, ParamsContext>>
-) => {
-  for (const [routeId, routeConfig] of Object.entries(routes)) {
-    if (routeConfig.route.public) {
-      configurePublicRoute({
-        app,
-        clients: clientConfig,
-        route: routeConfig.route,
-        routeId,
-        serviceHandler: routeConfig.handler,
-      })
-    } else {
-      configurePrivateRoute({
-        app,
-        clients: clientConfig,
-        route: routeConfig.route,
-        routeId,
-        serviceHandler: routeConfig.handler,
-      })
-    }
-  }
+export function publicRoute(
+  routeId: string,
+  path: string,
+  handler: RouteHandler
+): ComposedMiddleware<ServiceContext> {
+  return configurePublicRoute({
+    clients: clientConfig,
+    route: {
+      path,
+    },
+    routeId,
+    serviceHandler: handler,
+  })
+}
+
+export function privateRoute(
+  routeId: string,
+  path: string,
+  handler: RouteHandler
+): ComposedMiddleware<ServiceContext> {
+  return configurePrivateRoute({
+    clients: clientConfig,
+    route: {
+      path,
+    },
+    routeId,
+    serviceHandler: handler,
+  })
 }

@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-duplicates
 import type { Context, Next } from 'koa'
 // eslint-disable-next-line import/no-duplicates
-import type Koa from 'koa'
 import type {
   ClientsConfig,
   IOClients,
@@ -39,26 +38,25 @@ const fetchAppToken = async (ctx: Context, next: Next) => {
   await next()
 }
 
-export const configureDefaultMiddlewares = (app: Koa) => {
-  app.use(
+export const defaultMiddlewares = () => {
+  const tracer = TracerSingleton.getTracer()
+  const middlewares = [
     helmet({
       // CSP is disabled in development to allow access to GraphiQL UI
       contentSecurityPolicy: configuration.isProd(),
-    })
-  )
-  app.use(cors())
-  app.use(json())
-  app.use(bodyParser())
+    }),
+    cors(),
+    json(),
+    bodyParser(),
+    fetchAppToken,
+    addTracingMiddleware(tracer),
+  ]
+
   if (!configuration.isProd()) {
-    app.use(logger())
+    middlewares.push(logger())
   }
 
-  app.use(fetchAppToken)
-
-  const tracer = TracerSingleton.getTracer()
-
-  app.use(addTracingMiddleware(tracer))
-  // TODO add other middlewares from startWorks function
+  return middlewares
 }
 
 export const configurePublicRoute = <
@@ -68,16 +66,14 @@ export const configurePublicRoute = <
 >(
   routeConfig: RouteConfiguration<T, U, V>
 ) => {
-  const { app, clients, route, routeId, serviceHandler } = routeConfig
+  const { clients, route, routeId, serviceHandler } = routeConfig
 
-  app.use(
-    createPublicHttpRoute(
-      clients,
-      serviceHandler,
-      route,
-      routeId,
-      globalLimiter
-    )
+  return createPublicHttpRoute(
+    clients,
+    serviceHandler,
+    route,
+    routeId,
+    globalLimiter
   )
 }
 
@@ -88,18 +84,16 @@ export const configurePrivateRoute = <
 >(
   routeConfig: RouteConfiguration<T, U, V>
 ) => {
-  const { app, clients, route, routeId, serviceHandler } = routeConfig
+  const { clients, route, routeId, serviceHandler } = routeConfig
 
-  app.use(authorization)
+  const middlewares = [authorization, serviceHandler as RouteHandler<T, U, V>]
 
-  app.use(
-    createPrivateHttpRoute(
-      clients,
-      serviceHandler,
-      route,
-      routeId,
-      globalLimiter
-    )
+  return createPrivateHttpRoute(
+    clients,
+    middlewares,
+    route,
+    routeId,
+    globalLimiter
   )
 }
 
@@ -108,7 +102,6 @@ export interface RouteConfiguration<
   U extends RecorderState,
   V extends ParamsContext
 > {
-  app: Koa
   clients: ClientsConfig<T>
   serviceHandler: RouteHandler<T, U, V> | Array<RouteHandler<T, U, V>>
   route: ServiceRoute

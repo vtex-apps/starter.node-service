@@ -1,31 +1,19 @@
-import type { ParamsContext, RecorderState, IOClients } from '@vtex/api'
-import { method } from '@vtex/api'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import Router from 'koa-router'
 
 import HealthCheckController from './controllers/healthcheck.controller'
 import IndexController from './controllers/index.controller'
-import PrivateController from './controllers/private.controller'
-import type { RouteConfig } from './utils/route.utils'
+import { privateRoute, publicRoute } from './utils/route.utils'
 
-export const ROUTES: Record<
-  string,
-  RouteConfig<IOClients, RecorderState, ParamsContext>
-> = {
-  base: {
-    route: { path: '/', public: true },
-    handler: method({
-      GET: IndexController.getIndex,
-    }),
-  },
-  healthcheck: {
-    route: { path: '/healthcheck', public: true },
-    handler: method({
-      GET: HealthCheckController.getHealthCheck,
-    }),
-  },
-  private: {
-    route: { path: '/private', public: false },
-    handler: method({
-      GET: PrivateController.getPrivate,
-    }),
-  },
-}
+const router = new Router()
+
+router.get('/', publicRoute('base', '/', IndexController.getIndex) as any)
+
+router.get(
+  '/private',
+  privateRoute('private', '/', IndexController.getIndex) as any
+)
+
+router.get('/healthcheck', HealthCheckController.getHealthCheck)
+
+export default router
