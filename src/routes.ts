@@ -4,16 +4,13 @@ import Router from 'koa-router'
 import HealthCheckController from './controllers/healthcheck.controller'
 import IndexController from './controllers/index.controller'
 import PrivateController from './controllers/private.controller'
-import { privateRoute, publicRoute } from './utils/route.utils'
+import authorization from './middlewares/authorization-middleware'
 
 const router = new Router()
 
-router.get('/', publicRoute('base', '/', IndexController.getIndex) as any)
+router.get('/', IndexController.getIndex)
 
-router.get(
-  '/private',
-  privateRoute('private', '/', PrivateController.getPrivate) as any
-)
+router.get('/private', authorization, PrivateController.getPrivate)
 
 router.get('/healthcheck', HealthCheckController.getHealthCheck)
 
