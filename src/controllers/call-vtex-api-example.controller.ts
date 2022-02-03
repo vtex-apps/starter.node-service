@@ -1,10 +1,11 @@
 import type { Context } from 'koa'
 import { StatusCodes } from 'http-status-codes'
-import type { Catalog } from '@vtex/clients'
+
+import type { Clients } from '../clients'
 
 export default class CallVtexApiExampleController {
   public static async getProductCategory(ctx: Context) {
-    const { catalog }: { catalog: Catalog } = ctx.clients
+    const { catalog } = <Clients>ctx.clients
 
     const category = await catalog.getCategoryById('1')
 
