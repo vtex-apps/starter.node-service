@@ -1,15 +1,31 @@
+import type { ClientsConfig } from '@vtex/api'
 import Koa from 'koa'
+
 // import graphqlHTTP from 'koa-graphql'
 
 // import { GraphqlSchema } from './graphql/graphql.schema'
 // import { graphQlResolvers } from './graphql/resolvers/graphql.resolvers'
+import { Clients } from './clients'
 import { defaultMiddlewares } from './middlewares'
+import { defaultClientOptions } from './middlewares/default-configuration.constants'
 import router from './routes'
 
 const app = new Koa()
 const port = process.env.PORT ?? 8080
 
-const middlewares = defaultMiddlewares()
+const clients: ClientsConfig<Clients> = {
+  implementation: Clients,
+  options: {
+    ...defaultClientOptions,
+
+    // You can add specific options for each client here
+    catalog: {
+      timeout: 1000,
+    },
+  },
+}
+
+const middlewares = defaultMiddlewares(clients)
 
 middlewares.forEach((middleware) => app.use(middleware))
 

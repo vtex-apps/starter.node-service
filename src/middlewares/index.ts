@@ -1,4 +1,5 @@
 import type { Context, Next } from 'koa'
+import type { ClientsConfig } from '@vtex/api'
 import { ACCOUNT_HEADER, CREDENTIAL_HEADER } from '@vtex/api'
 import { TracerSingleton } from '@vtex/api/lib/service/tracing/TracerSingleton'
 import { addTracingMiddleware } from '@vtex/api/lib/service/tracing/tracingMiddlewares'
@@ -11,27 +12,30 @@ import logger from 'koa-logger'
 import configuration from '../utils/configuration.utils'
 import { defaultClients } from './default-configuration.constants'
 import { createAppRoutesMiddleware } from './app-routes.middleware'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import {
-  addExecuteMiddlewaresForRouteType,
-  MiddlewaresByRouteType,
-} from './route-type.middleware'
+import type { MiddlewaresByRouteType } from './route-type.middleware'
+import { addExecuteMiddlewaresForRouteType } from './route-type.middleware'
 
 const fetchAppToken = async (ctx: Context, next: Next) => {
   const { header } = ctx.request
 
+  const config = ctx.config || {}
+
+  ctx.config = config
+
+  config.forceMaxAge = 5000
+
   header[ACCOUNT_HEADER] = 'storecomponents'
   header[CREDENTIAL_HEADER] =
-    'eyJhbGciOiJFUzI1NiIsImtpZCI6IjRBNTE2OTBCRkFEODlDQUQ0NDg3MjJDMTExNzdERDEyMTJBMDU3MjQiLCJ0eXAiOiJqd3QifQ.eyJzdWIiOiJyYWZhZWwuc2FuZ2FsbGlAdnRleC5jb20uYnIiLCJhY2NvdW50Ijoic3RvcmVjb21wb25lbnRzIiwiYXVkaWVuY2UiOiJhZG1pbiIsImlkbGV0aW1lb3V0Ijo4NjQwMCwic2VzcyI6ImJmMzAyNDViLWJhMjUtNGQ2Mi1hNmQ0LWY1NWMxNjU4YTE5ZCIsImV4cCI6MTY0MzgyNjgzMCwidXNlcklkIjoiZjY0NzllZWYtOTQxNi00MGU0LWIzMzctODIwZDNlOTcxNjY3IiwiaWF0IjoxNjQzNzQwNDMwLCJpc3MiOiJ0b2tlbi1lbWl0dGVyIiwianRpIjoiYjk0NDBlOTQtMjFkMS00NThkLThhZjktM2JmZjcwM2Q3MGE1In0.oALWnmcEwrfhfNfGTkzhpOr-trvdQwwm_mNFaYCEFoiAvVhQsU7iZ5gyfYD4ss_lBM-lF3YQN4jMuhToGF09bQ'
+    'eyJhbGciOiJFUzI1NiIsImtpZCI6IjA0RUJFMUQ5NUFDQTg2NTJEOUFGMzQwRUUwRTNGRjkzNkZFNkU2MDUiLCJ0eXAiOiJqd3QifQ.eyJzdWIiOiJyYWZhZWwuc2FuZ2FsbGlAdnRleC5jb20uYnIiLCJhY2NvdW50Ijoic3RvcmVjb21wb25lbnRzIiwiYXVkaWVuY2UiOiJhZG1pbiIsImlkbGV0aW1lb3V0Ijo4NjQwMCwic2VzcyI6ImEyNWJlMjEyLTE4OWYtNDIyNi05OGIzLTY2YTIyZDNjODIxNyIsImV4cCI6MTY0Mzk5NDY4MSwidXNlcklkIjoiZjY0NzllZWYtOTQxNi00MGU0LWIzMzctODIwZDNlOTcxNjY3IiwiaWF0IjoxNjQzOTA4MjgxLCJpc3MiOiJ0b2tlbi1lbWl0dGVyIiwianRpIjoiOGRlN2QxNDAtZWJiZS00NzAzLWJmNjgtM2I0YTBkMmIyNWY4In0.-euLPoNVkL35OW3IcZhH_iDaNYjD19-NmWkEF7AJYQ1FKAYUAeU3h6lLlq3SgRhQDpnN817uUzSlLpV8x5jQ0g'
 
   await next()
 }
 
-export const defaultMiddlewares = () => {
+export const defaultMiddlewares = (clients: ClientsConfig = defaultClients) => {
   const tracer = TracerSingleton.getTracer()
 
   const middlewaresForRouteType: MiddlewaresByRouteType = {
-    app: [createAppRoutesMiddleware(defaultClients)],
+    app: [createAppRoutesMiddleware(clients)],
     system: [],
   }
 
