@@ -1,17 +1,45 @@
 import request from 'supertest'
 import { StatusCodes } from 'http-status-codes'
 import axios from 'axios'
+import type { Catalog, Category } from '@vtex/clients'
 
 import { app, server } from '../index'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
 
+jest.mock('@vtex/clients', () => {
+  const originalModule = jest.requireActual('@vtex/clients')
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    Catalog: jest.fn(
+      (): Partial<Catalog> => ({
+        getCategoryById: jest.fn((categoryId: string) => {
+          return Promise.resolve({
+            Id: categoryId,
+          } as Category)
+        }),
+      })
+    ),
+  }
+})
+
 describe('Index Route', () => {
   it('returns status code 200', async () => {
     const response = await request(app.callback()).get('/')
 
     expect(response.status).toBe(StatusCodes.OK)
+  })
+})
+
+describe('Call VTEX API Route', () => {
+  it('returns status code 200', async () => {
+    const response = await request(app.callback()).get('/category/1')
+
+    expect(response.status).toBe(StatusCodes.OK)
+    expect(response.body.Id).toBe('1')
   })
 })
 
