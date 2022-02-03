@@ -1,5 +1,5 @@
 import type { Context, Next } from 'koa'
-import type { ClientsConfig } from '@vtex/api'
+import type { ClientsConfig, ServiceContext } from '@vtex/api'
 import { ACCOUNT_HEADER, CREDENTIAL_HEADER } from '@vtex/api'
 import { TracerSingleton } from '@vtex/api/lib/service/tracing/TracerSingleton'
 import { addTracingMiddleware } from '@vtex/api/lib/service/tracing/tracingMiddlewares'
@@ -34,7 +34,7 @@ const fetchAppToken = async (ctx: Context, next: Next) => {
 export const defaultMiddlewares = (clients: ClientsConfig = defaultClients) => {
   const tracer = TracerSingleton.getTracer()
 
-  const middlewaresForRouteType: MiddlewaresByRouteType = {
+  const middlewaresForRouteType: MiddlewaresByRouteType<ServiceContext> = {
     app: [createAppRoutesMiddleware(clients)],
     system: [],
   }

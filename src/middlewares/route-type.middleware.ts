@@ -1,12 +1,11 @@
-import type { ComposedMiddleware } from 'koa-compose'
 import koaCompose from 'koa-compose'
-import type { ServiceContext } from '@vtex/api'
+import type { Context, Middleware, Next } from 'koa'
 
 export type RouteType = 'system' | 'app'
 
 const SYSTEM_ROUTES = ['/healthcheck']
 
-const getRouteType = (ctx: ServiceContext): RouteType => {
+const getRouteType = (ctx: Context): RouteType => {
   if (SYSTEM_ROUTES.includes(ctx.request.path)) {
     return 'system'
   }
@@ -14,18 +13,15 @@ const getRouteType = (ctx: ServiceContext): RouteType => {
   return 'app'
 }
 
-export type MiddlewaresByRouteType = Record<
+export type MiddlewaresByRouteType<T extends Context> = Record<
   RouteType,
-  Array<ComposedMiddleware<ServiceContext>> // TODO change to a more generic type>
+  Array<Middleware<unknown, T, unknown>>
 >
 
-export const addExecuteMiddlewaresForRouteType = (
-  middlewaresByRouteType: MiddlewaresByRouteType
+export const addExecuteMiddlewaresForRouteType = <T extends Context>(
+  middlewaresByRouteType: MiddlewaresByRouteType<T>
 ) => {
-  return async function executeMiddlwaresForRouteType(
-    ctx: ServiceContext,
-    next: () => Promise<void>
-  ) {
+  return async function executeMiddlwaresForRouteType(ctx: T, next: Next) {
     const routeType = getRouteType(ctx)
     const middlewares = middlewaresByRouteType[routeType]
     const middleware = koaCompose(middlewares)
