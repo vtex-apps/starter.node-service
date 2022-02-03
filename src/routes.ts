@@ -4,7 +4,7 @@ import Router from 'koa-router'
 import HealthCheckController from './controllers/healthcheck.controller'
 import IndexController from './controllers/index.controller'
 import PrivateController from './controllers/private.controller'
-import authorization from './middlewares/authorization-middleware'
+import authorization from './middlewares/authorization.middleware'
 
 const router = new Router()
 
