@@ -6,6 +6,8 @@ import type {
 } from '@vtex/api'
 import { prepareHandlerCtx } from '@vtex/api/lib/service/worker/runtime/utils/context'
 
+import { getRouteId } from '../utils/context.utils'
+
 export const createContextMiddleware = () => {
   return async function pvtContext<
     T extends IOClients,
@@ -17,8 +19,7 @@ export const createContextMiddleware = () => {
       request: { header },
     } = ctx
 
-    // TODO get routeId from request
-    const routeId = ''
+    const routeId = getRouteId(ctx)
 
     ctx.vtex = {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -1,5 +1,7 @@
 import type { ServiceContext } from '@vtex/api'
 
+import { getRouteId } from '../utils/context.utils'
+
 export const nameSpanOperationMiddleware = () => {
   return function nameSpanOperation(
     ctx: ServiceContext,
@@ -7,8 +9,7 @@ export const nameSpanOperationMiddleware = () => {
   ) {
     const operationType = 'app-route-handler'
 
-    // TODO get routeId from request
-    const operationName = ''
+    const operationName = getRouteId(ctx)
 
     ctx.tracing?.currentSpan.setOperationName(
       `${operationType}:${operationName}`

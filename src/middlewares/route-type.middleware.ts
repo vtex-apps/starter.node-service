@@ -19,7 +19,7 @@ export type MiddlewaresByRouteType = Record<
   Array<ComposedMiddleware<ServiceContext>> // TODO change to a more generic type>
 >
 
-export const createExecuteMiddlewaresForRouteType = (
+export const addExecuteMiddlewaresForRouteType = (
   middlewaresByRouteType: MiddlewaresByRouteType
 ) => {
   return async function executeMiddlwaresForRouteType(

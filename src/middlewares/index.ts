@@ -1,4 +1,3 @@
-/* eslint-disable max-params */
 import type { Context, Next } from 'koa'
 import { ACCOUNT_HEADER, CREDENTIAL_HEADER } from '@vtex/api'
 import { TracerSingleton } from '@vtex/api/lib/service/tracing/TracerSingleton'
@@ -14,7 +13,7 @@ import { defaultClients } from './default-configuration.constants'
 import { createAppRoutesMiddleware } from './app-routes.middleware'
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import {
-  createExecuteMiddlewaresForRouteType,
+  addExecuteMiddlewaresForRouteType,
   MiddlewaresByRouteType,
 } from './route-type.middleware'
 
@@ -46,7 +45,7 @@ export const defaultMiddlewares = () => {
     bodyParser(),
     fetchAppToken,
     addTracingMiddleware(tracer),
-    createExecuteMiddlewaresForRouteType(middlewaresForRouteType),
+    addExecuteMiddlewaresForRouteType(middlewaresForRouteType),
   ]
 
   if (!configuration.isProd()) {
