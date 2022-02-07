@@ -1,5 +1,4 @@
 import type { Context, Next } from 'koa'
-import type { ClientsConfig, ServiceContext } from '@vtex/api'
 import { ACCOUNT_HEADER, CREDENTIAL_HEADER } from '@vtex/api'
 import { TracerSingleton } from '@vtex/api/lib/service/tracing/TracerSingleton'
 import { addTracingMiddleware } from '@vtex/api/lib/service/tracing/tracingMiddlewares'
@@ -8,34 +7,47 @@ import cors from '@koa/cors'
 import helmet from 'koa-helmet'
 import json from 'koa-json'
 import logger from 'koa-logger'
+import axios from 'axios'
 
 import configuration from '../utils/configuration.utils'
 import { defaultClients } from './default-configuration.constants'
 import { createAppRoutesMiddleware } from './app-routes.middleware'
-import type { MiddlewaresByRouteType } from './route-type.middleware'
-import { addExecuteMiddlewaresForRouteType } from './route-type.middleware'
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import {
+  addExecuteMiddlewaresForRouteType,
+  MiddlewaresByRouteType,
+} from './route-type.middleware'
 
 const fetchAppToken = async (ctx: Context, next: Next) => {
-  const { header } = ctx.request
+  const headers = {
+    'x-vtex-api-appkey': process.env.VTEX_APP_KEY ?? '',
+    'x-vtex-api-apptoken': process.env.VTEX_APP_TOKEN ?? '',
+  }
 
-  const config = ctx.config || {}
+  const accountName = 'storecomponents'
 
-  ctx.config = config
+  try {
+    const request = await axios.get(`auth/accounts/${accountName}/jwt`, {
+      headers,
+      baseURL: process.env.APPS_FRAMEWORK_API_HOST,
+      responseType: 'json',
+    })
 
-  config.forceMaxAge = 5000
-
-  header[ACCOUNT_HEADER] = 'storecomponents'
-  header[CREDENTIAL_HEADER] =
-    'eyJhbGciOiJFUzI1NiIsImtpZCI6IjA0RUJFMUQ5NUFDQTg2NTJEOUFGMzQwRUUwRTNGRjkzNkZFNkU2MDUiLCJ0eXAiOiJqd3QifQ.eyJzdWIiOiJyYWZhZWwuc2FuZ2FsbGlAdnRleC5jb20uYnIiLCJhY2NvdW50Ijoic3RvcmVjb21wb25lbnRzIiwiYXVkaWVuY2UiOiJhZG1pbiIsImlkbGV0aW1lb3V0Ijo4NjQwMCwic2VzcyI6ImEyNWJlMjEyLTE4OWYtNDIyNi05OGIzLTY2YTIyZDNjODIxNyIsImV4cCI6MTY0Mzk5NDY4MSwidXNlcklkIjoiZjY0NzllZWYtOTQxNi00MGU0LWIzMzctODIwZDNlOTcxNjY3IiwiaWF0IjoxNjQzOTA4MjgxLCJpc3MiOiJ0b2tlbi1lbWl0dGVyIiwianRpIjoiOGRlN2QxNDAtZWJiZS00NzAzLWJmNjgtM2I0YTBkMmIyNWY4In0.-euLPoNVkL35OW3IcZhH_iDaNYjD19-NmWkEF7AJYQ1FKAYUAeU3h6lLlq3SgRhQDpnN817uUzSlLpV8x5jQ0g'
+    // set request header for future middlewares
+    ctx.header[ACCOUNT_HEADER] = 'storecomponents'
+    ctx.header[CREDENTIAL_HEADER] = request.data.jwt
+  } catch (e) {
+    console.error(e)
+  }
 
   await next()
 }
 
-export const defaultMiddlewares = (clients: ClientsConfig = defaultClients) => {
+export const defaultMiddlewares = () => {
   const tracer = TracerSingleton.getTracer()
 
-  const middlewaresForRouteType: MiddlewaresByRouteType<ServiceContext> = {
-    app: [createAppRoutesMiddleware(clients)],
+  const middlewaresForRouteType: MiddlewaresByRouteType<any> = {
+    app: [createAppRoutesMiddleware(defaultClients)],
     system: [],
   }
 
