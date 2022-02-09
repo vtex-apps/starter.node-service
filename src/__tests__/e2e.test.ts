@@ -27,16 +27,26 @@ jest.mock('@vtex/clients', () => {
 })
 
 describe('Index Route', () => {
+  beforeEach(() => {
+    mockedAxios.get.mockResolvedValue({ status: 200, data: { jwt: 'token' } })
+  })
   it('returns status code 200', async () => {
-    const response = await request(app.callback()).get('/')
+    const response = await request(app.callback())
+      .get('/')
+      .set('x-vtex-account', 'account')
 
     expect(response.status).toBe(StatusCodes.OK)
   })
 })
 
 describe('Call VTEX API Route', () => {
+  beforeEach(() => {
+    mockedAxios.get.mockResolvedValue({ status: 200, data: { jwt: 'token' } })
+  })
   it('returns status code 200', async () => {
-    const response = await request(app.callback()).get('/category/1')
+    const response = await request(app.callback())
+      .get('/category/1')
+      .set('x-vtex-account', 'account')
 
     expect(response.status).toBe(StatusCodes.OK)
     expect(response.body.Id).toBe('1')
@@ -46,10 +56,14 @@ describe('Call VTEX API Route', () => {
 // TODO - Add tests once graphql is implemented
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('GraphQL queries', () => {
+  beforeEach(() => {
+    mockedAxios.get.mockResolvedValue({ status: 200, data: { jwt: 'token' } })
+  })
   it('returns Hello World data', async () => {
     const response = await request(app.callback())
       .post('/graphql')
       .set('Content-Type', 'application/json')
+      .set('x-vtex-account', 'account')
       .send({ query: '{ hello }' })
 
     expect(response.status).toBe(StatusCodes.OK)
@@ -58,18 +72,28 @@ describe.skip('GraphQL queries', () => {
 })
 
 describe('HealthCheck Route', () => {
+  beforeEach(() => {
+    mockedAxios.get.mockResolvedValue({ status: 200, data: { jwt: 'token' } })
+  })
   it('returns status code 200', async () => {
-    const response = await request(app.callback()).get('/healthcheck')
+    const response = await request(app.callback())
+      .get('/healthcheck')
+      .set('x-vtex-account', 'account')
 
     expect(response.status).toBe(StatusCodes.OK)
   })
 })
 
 describe('Private Route', () => {
+  beforeEach(() => {
+    mockedAxios.get.mockResolvedValue({ status: 200, data: { jwt: 'token' } })
+  })
+
   it('returns status code 200 when external validation of credential passes', async () => {
     mockedAxios.post.mockResolvedValue({ status: 200 })
-
-    const response = await request(app.callback()).get('/private')
+    const response = await request(app.callback())
+      .get('/private')
+      .set('x-vtex-account', 'account')
 
     expect(response.status).toBe(StatusCodes.OK)
     expect(response.text).toBe(
@@ -80,7 +104,9 @@ describe('Private Route', () => {
   it('returns status code 403 when external validation of credential fails', async () => {
     mockedAxios.post.mockResolvedValue({ status: 400 })
 
-    const response = await request(app.callback()).get('/private')
+    const response = await request(app.callback())
+      .get('/private')
+      .set('x-vtex-account', 'account')
 
     expect(response.status).toBe(StatusCodes.FORBIDDEN)
   })
