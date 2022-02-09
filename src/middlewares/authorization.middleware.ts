@@ -13,6 +13,10 @@ const authorization = async (ctx: Context, next: Next) => {
 
   const data = createDataFromRequesterCredentials(ctx)
 
+  if (!data) {
+    ctx.throw(StatusCodes.UNAUTHORIZED)
+  }
+
   const request = await axios.post(CREDENTIALS_VALIDATION_ENDPOINT, data, {
     headers,
     baseURL: process.env.APPS_FRAMEWORK_API_HOST,
