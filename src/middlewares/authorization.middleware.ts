@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import type { Next, Context } from 'koa'
 import axios from 'axios'
 
-const authorization = async (ctx: Context, next: Next) => {
+const authorizationMiddleware = async (ctx: Context, next: Next) => {
   // TODO migrate middleware to npm lib
   const CREDENTIALS_VALIDATION_ENDPOINT = '/auth/users/validate'
 
@@ -63,4 +63,4 @@ export interface ValidateCredentialsPayload {
   vtexAppToken?: string
 }
 
-export default authorization
+export default authorizationMiddleware
