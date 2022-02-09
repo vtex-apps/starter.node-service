@@ -24,7 +24,7 @@ export const createContextMiddleware = () => {
     ctx.vtex = {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ...prepareHandlerCtx(header, ctx.tracing!),
-      // ...(smartcache && { recorder: ctx.state.recorder }),
+      // TODO ...(smartcache && { recorder: ctx.state.recorder }),
       route: {
         id: routeId,
         params,
