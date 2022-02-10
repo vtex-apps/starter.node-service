@@ -2,7 +2,7 @@ import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import type { Context } from 'koa'
 
-import { fetchAppTokenMiddleware } from '../middlewares/fetch-app-token.middleware'
+import { fetchAppTokenMiddleware } from '../../middlewares/fetch-app-token.middleware'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
