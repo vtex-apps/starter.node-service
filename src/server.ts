@@ -1,4 +1,5 @@
 import type { ClientsConfig } from '@vtex/api'
+import { TracerSingleton } from '@vtex/api/lib/service/tracing/TracerSingleton'
 import Koa from 'koa'
 
 // import graphqlHTTP from 'koa-graphql'
@@ -44,6 +45,18 @@ app.use(router.routes())
 
 const server = app.listen(port, () => {
   console.log(`App listening on the port ${port}`)
+})
+
+declare module 'opentracing' {
+  interface Tracer {
+    close(): void
+  }
+}
+
+server.on('close', () => {
+  const tracer = TracerSingleton.getTracer()
+
+  tracer.close()
 })
 
 export { app, server }
