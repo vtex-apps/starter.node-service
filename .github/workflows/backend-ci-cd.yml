@@ -36,6 +36,8 @@ jobs:
         working-directory: ${{ env.WORK_DIR }}
       - run: yarn run test
         working-directory: ${{ env.WORK_DIR }}
+        env:
+          VTEX_APP_ID: ${{ steps.app-metadata.outputs.app-id }}
       - run: yarn run build
         working-directory: ${{ env.WORK_DIR }}
 
