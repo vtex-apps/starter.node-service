@@ -46,7 +46,6 @@ describe('Fetch App Token Middleware', () => {
       'x-vtex-api-appkey': thisAppKey,
       'x-vtex-api-apptoken': thisAppToken,
     })
-    expect(ctx.header?.['x-vtex-account']).toBe(accountName)
     expect(ctx.header?.['x-vtex-credential']).toBe(authorizationToken)
   })
 })

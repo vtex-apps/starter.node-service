@@ -74,3 +74,23 @@ jobs:
           docker-token: ${{ secrets.DOCKER_TOKEN }}
           version-visibility: ${{ env.APP_VERSION_VISIBILITY }}
           version-increment-type: 'patch'
+
+      - name: Get app metadata
+        id: app-metadata
+        uses: vtex/app-metadata-action@main
+        with:
+          version-visibility: ${{ env.APP_VERSION_VISIBILITY }}
+          version-increment-type: 'patch'
+
+      - name: Update app files to use the published version
+        uses: mikefarah/yq@v4.22.1
+        with:
+          cmd: yq -i '.version |= "${{steps.app-metadata.outputs.next-app-version}}"' vtex.yml
+
+      - name: Push new version to repository
+        run: |
+          git config --global user.name 'App CI/CD bot'
+          git config --global user.email '<>'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Increments app version"
+          git push

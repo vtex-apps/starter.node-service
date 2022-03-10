@@ -8,7 +8,7 @@ export const fetchAppTokenMiddleware = async (ctx: Context, next: Next) => {
     'x-vtex-api-apptoken': process.env.VTEX_APP_TOKEN ?? '',
   }
 
-  const accountName = ctx.headers['x-vtex-account'] as string
+  const accountName = ctx.headers[ACCOUNT_HEADER] as string
 
   try {
     const request = await axios.get(`auth/accounts/${accountName}/jwt`, {
@@ -18,7 +18,6 @@ export const fetchAppTokenMiddleware = async (ctx: Context, next: Next) => {
     })
 
     // set request header for future middlewares
-    ctx.header[ACCOUNT_HEADER] = accountName
     ctx.header[CREDENTIAL_HEADER] = request.data.jwt
   } catch (e) {
     console.error(e)

@@ -14,6 +14,8 @@ import koaCompose from 'koa-compose'
 import { nameSpanOperationMiddleware } from './tracing.middleware'
 import { createContextMiddleware } from './context.middleware'
 import { globalLimiter } from './default-configuration.constants'
+import { fetchAppTokenMiddleware } from './fetch-app-token.middleware'
+import { validateExpectedHeaders } from './validate-expected-headers.middleware'
 
 export const createAppRoutesMiddleware = <T extends IOClients>(
   clientsConfig: ClientsConfig<T>
@@ -21,6 +23,8 @@ export const createAppRoutesMiddleware = <T extends IOClients>(
   const { implementation, options } = clientsConfig
 
   const middlewares = [
+    validateExpectedHeaders,
+    fetchAppTokenMiddleware,
     nameSpanOperationMiddleware(),
     createContextMiddleware(),
     cancellationToken,
