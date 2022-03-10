@@ -18,7 +18,7 @@ export const fetchAppTokenMiddleware = async (ctx: Context, next: Next) => {
     })
 
     // set request header for future middlewares
-    ctx.header[ACCOUNT_HEADER] = 'storecomponents'
+    ctx.header[ACCOUNT_HEADER] = accountName
     ctx.header[CREDENTIAL_HEADER] = request.data.jwt
   } catch (e) {
     console.error(e)

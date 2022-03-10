@@ -27,7 +27,7 @@ describe('Fetch App Token Middleware', () => {
         authorization: authorizationToken,
         'x-vtex-account': accountName,
       },
-      set: jest.fn(),
+      header: {},
     }
 
     const { mock } = mockedAxios.get
@@ -46,11 +46,7 @@ describe('Fetch App Token Middleware', () => {
       'x-vtex-api-appkey': thisAppKey,
       'x-vtex-api-apptoken': thisAppToken,
     })
-    expect(ctx.set).toHaveBeenNthCalledWith(1, 'x-vtex-account', accountName)
-    expect(ctx.set).toHaveBeenNthCalledWith(
-      2,
-      'x-vtex-credential',
-      authorizationToken
-    )
+    expect(ctx.header?.['x-vtex-account']).toBe(accountName)
+    expect(ctx.header?.['x-vtex-credential']).toBe(authorizationToken)
   })
 })
