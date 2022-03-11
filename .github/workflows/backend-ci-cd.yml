@@ -55,6 +55,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          # This will checkout the PR branch instead of refs/pull/:pr_id/merge
+          # It is necessary to avoid a detached HEAD when trying to push updates to the branch
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: set-version-visibility-to-unpublished
         if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
