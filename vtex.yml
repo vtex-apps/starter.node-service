@@ -1,6 +1,6 @@
 name: starter-node-service
 vendor: extensions
-version: 0.0.17
+version: 0.0.18-4ddad3f.0
 services:
   - name: service
     folder: ./
