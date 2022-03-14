@@ -6,7 +6,7 @@ on:
 
 jobs:
   call-workflow-frontend-ci:
-    uses: .github/workflows/frontend-ci.yml@v1
+    uses: ./.github/workflows/frontend-ci.yml@v1
 
   call-workflow-frontend-staging:
-    uses: .github/workflows/frontend-staging.yml@v1
+    uses: ./.github/workflows/frontend-staging.yml@v1
