@@ -1,7 +1,6 @@
 name: Call a reusable workflow
 
-on:
-  workflow_dispatch:
+on: push
 
 jobs:
   backend-ci:
