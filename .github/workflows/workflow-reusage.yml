@@ -3,12 +3,10 @@ name: Call a reusable workflow
 on:
   push:
     branches: '*'
-  pull_request:
-    branches: '*'
 
 jobs:
   call-workflow-frontend-ci:
-    uses: ./.github/workflows/frontend-ci.yml
+    uses: ./frontend-ci.yml
 
   call-workflow-frontend-staging:
-    uses: ./.github/workflows/frontend-staging.yml
+    uses: ./frontend-staging.yml
