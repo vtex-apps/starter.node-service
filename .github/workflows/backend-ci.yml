@@ -1,4 +1,4 @@
-name: frontend-ci
+name: backend-ci
 
 on:
   workflow_call:
@@ -8,4 +8,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: CI
-        run: echo "This will run frontend CI"
+        run: echo "This will run backend CI"

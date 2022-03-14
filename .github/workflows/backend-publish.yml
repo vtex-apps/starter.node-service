@@ -1,0 +1,11 @@
+name: backend-publish
+
+on:
+  workflow_call:
+
+jobs:
+  my-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publishing
+        run: echo "This will publish backend"

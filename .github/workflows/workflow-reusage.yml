@@ -1,10 +1,19 @@
 name: Call a reusable workflow
 
-on: push
+on:
+  workflow_dispatch:
 
 jobs:
-  call-workflow-frontend-ci:
+  backend-ci:
+    uses: ./.github/workflows/backend-ci.yml
+
+  frontend-ci:
     uses: ./.github/workflows/frontend-ci.yml
 
-  call-workflow-frontend-staging:
-    uses: ./.github/workflows/frontend-staging.yml
+  publish-frontend-on-success:
+    uses: ./.github/workflows/frontend-publish.yml
+    needs: [backend-ci, frontend-ci]
+
+  publish-backend-on-success:
+    uses: ./.github/workflows/backend-publish.yml
+    needs: [backend-ci, frontend-ci]
