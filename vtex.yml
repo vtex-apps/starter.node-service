@@ -1,10 +1,9 @@
 name: starter-node-service
 vendor: extensions
 version: 0.0.17
-
 services:
-- name: service
-  folder: ./
-  image-name: vtex-docker/starter-node-service
-  public: true
-  # Check https://tinyurl.com/ujm8kmuv for optional params - TODO point this link to public doc
+  - name: service
+    folder: ./
+    image-name: vtex-docker/starter-node-service
+    public: true
+    # Check https://tinyurl.com/ujm8kmuv for optional params - TODO point this link to public doc
