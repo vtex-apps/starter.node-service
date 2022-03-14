@@ -9,3 +9,6 @@ jobs:
     steps:
       - name: CI
         run: echo "This will run frontend CI"
+      - name: Fail
+        run: exit 1
+
