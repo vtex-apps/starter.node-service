@@ -49,12 +49,16 @@ jobs:
     if: ${{ success() }}
 
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          # This will checkout the PR branch instead of refs/pull/:pr_id/merge
+          # It is necessary to avoid a detached HEAD when trying to push updates to the branch
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: set-version-visibility-to-unpublished
         if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
@@ -74,3 +78,24 @@ jobs:
           docker-token: ${{ secrets.DOCKER_TOKEN }}
           version-visibility: ${{ env.APP_VERSION_VISIBILITY }}
           version-increment-type: 'patch'
+
+      - name: Get app metadata
+        id: app-metadata
+        uses: vtex/app-metadata-action@main
+        with:
+          version-visibility: ${{ env.APP_VERSION_VISIBILITY }}
+          version-increment-type: 'patch'
+
+      - name: Update app files to use the published version
+        uses: mikefarah/yq@v4.22.1
+        with:
+          cmd: yq -i '.version |= "${{steps.app-metadata.outputs.next-app-version}}"' vtex.yml
+
+      - name: Push new version to repository
+        run: |
+          git config --global user.name 'App CI/CD bot'
+          git config --global user.email '<>'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Increments app version"
+          git push
+

@@ -15,7 +15,6 @@ import {
   addExecuteMiddlewaresForRouteType,
   MiddlewaresByRouteType,
 } from './route-type.middleware'
-import { fetchAppTokenMiddleware } from './fetch-app-token.middleware'
 
 export const defaultMiddlewares = (clients: ClientsConfig = defaultClients) => {
   const tracer = TracerSingleton.getTracer()
@@ -33,7 +32,6 @@ export const defaultMiddlewares = (clients: ClientsConfig = defaultClients) => {
     cors(),
     json(),
     bodyParser(),
-    fetchAppTokenMiddleware,
     addTracingMiddleware(tracer),
     addExecuteMiddlewaresForRouteType(middlewaresForRouteType),
   ]
