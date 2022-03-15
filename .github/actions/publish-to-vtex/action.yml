@@ -27,20 +27,5 @@ runs:
   using: "composite"
   steps:
 
-    - name: Publish app services to VTEX Docker repository
-      id: publish-docker-images
-      uses: ./.github/actions/publish-docker-image-to-vtex
-      with:
-        docker-user: ${{ inputs.docker-user }}
-        docker-token: ${{ inputs.docker-token }}
-        version-visibility: ${{ inputs.version-visibility }}
-        version-increment-type: ${{ inputs.version-increment-type }}
 
-    - name: Release the current app version to VTEX
-      id: release-app-staging
-      uses: ./.github/actions/publish-app-version-to-vtex
-      with:
-        vtex-app-key: ${{ inputs.vtex-app-key }}
-        vtex-app-token: ${{ inputs.vtex-app-token }}
-        version-visibility: ${{ inputs.version-visibility }}
-        version-increment-type: ${{ inputs.version-increment-type }}
+
