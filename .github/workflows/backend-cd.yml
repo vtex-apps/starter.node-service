@@ -5,9 +5,18 @@ name: Backend Service Publishing (CD)
 
 on:
   workflow_call:
-
-env:
-  APP_VERSION_INCREMENT_TYPE: patch
+    inputs:
+      APP_VERSION_VISIBILITY:
+        type: string
+        required: true
+      APP_VERSION_INCREMENT_TYPE:
+        type: string
+        required: true
+    secrets:
+      DOCKER_USER:
+        required: true
+      DOCKER_TOKEN:
+        required: true
 
 jobs:
   publish-docker-image:
@@ -15,20 +24,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          # This will checkout the PR branch instead of refs/pull/:pr_id/merge
-          # It is necessary to avoid a detached HEAD when trying to push updates to the branch
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: set-version-visibility-to-unpublished
-        if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-        run: echo "APP_VERSION_VISIBILITY=unpublished" >> $GITHUB_ENV
-
-      - name: set-version-visibility-to-development
-        if: ${{ !(github.event_name == 'push' && github.ref_name == 'main') }}
-        run: echo "APP_VERSION_VISIBILITY=development" >> $GITHUB_ENV
+      - uses: actions/checkout@v2
 
       - name: Publish app services to VTEX Docker repository
         id: publish-docker-images
@@ -36,5 +32,5 @@ jobs:
         with:
           docker-user: ${{ secrets.DOCKER_USER }}
           docker-token: ${{ secrets.DOCKER_TOKEN }}
-          version-visibility: ${{ env.APP_VERSION_VISIBILITY }}
-          version-increment-type: ${{ env.APP_VERSION_INCREMENT_TYPE }}
+          version-visibility: ${{ inputs.APP_VERSION_VISIBILITY }}
+          version-increment-type: ${{ inputs.APP_VERSION_INCREMENT_TYPE }}
