@@ -12,6 +12,9 @@ on:
       APP_VERSION_INCREMENT_TYPE:
         type: string
         required: true
+      WORK_DIR:
+        type: string
+        required: true
     secrets:
       DOCKER_USER:
         required: true
@@ -34,3 +37,4 @@ jobs:
           docker-token: ${{ secrets.DOCKER_TOKEN }}
           version-visibility: ${{ inputs.APP_VERSION_VISIBILITY }}
           version-increment-type: ${{ inputs.APP_VERSION_INCREMENT_TYPE }}
+          work-dir: ${{ inputs.WORK_DIR }}

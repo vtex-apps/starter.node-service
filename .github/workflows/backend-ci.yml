@@ -5,9 +5,13 @@ name: Backend Service CI
 
 on:
   workflow_call:
-
-env:
-  APP_VERSION_INCREMENT_TYPE: patch
+    inputs:
+      APP_VERSION_INCREMENT_TYPE:
+        type: string
+        required: true
+      WORK_DIR:
+        type: string
+        required: true
 
 jobs:
   test:
@@ -28,15 +32,13 @@ jobs:
       - name: Get app metadata
         id: app-metadata
         uses: vtex/app-metadata-action@main
-      - name: Export env.WORK_DIR as the service path
-        run: echo "WORK_DIR=${{ steps.app-metadata.outputs.service-folder }}" >> $GITHUB_ENV
       - run: yarn
-        working-directory: ${{ env.WORK_DIR }}
+        working-directory: ${{ inputs.WORK_DIR }}
       - run: yarn run lint
-        working-directory: ${{ env.WORK_DIR }}
+        working-directory: ${{ inputs.WORK_DIR }}
       - run: yarn run test
-        working-directory: ${{ env.WORK_DIR }}
+        working-directory: ${{ inputs.WORK_DIR }}
         env:
           VTEX_APP_ID: ${{ steps.app-metadata.outputs.app-id }}
       - run: yarn run build
-        working-directory: ${{ env.WORK_DIR }}
+        working-directory: ${{ inputs.WORK_DIR }}
