@@ -9,6 +9,9 @@ on:
       APP_VERSION_INCREMENT_TYPE:
         type: string
         required: true
+      APP_VERSION_VISIBILITY:
+        type: string
+        required: true
       WORK_DIR:
         type: string
         required: true
@@ -16,29 +19,30 @@ on:
 jobs:
   test:
     name: lint, test, and build
-    runs-on: ${{ matrix.os }}
 
-    strategy:
-      matrix:
-        node-version: [14.x]
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
+
       - name: Get app metadata
         id: app-metadata
         uses: vtex/app-metadata-action@main
+
       - run: yarn
         working-directory: ${{ inputs.WORK_DIR }}
+
       - run: yarn run lint
         working-directory: ${{ inputs.WORK_DIR }}
+
       - run: yarn run test
         working-directory: ${{ inputs.WORK_DIR }}
         env:
           VTEX_APP_ID: ${{ steps.app-metadata.outputs.app-id }}
+
       - run: yarn run build
         working-directory: ${{ inputs.WORK_DIR }}

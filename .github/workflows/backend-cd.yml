@@ -6,10 +6,10 @@ name: Backend Service Publishing (CD)
 on:
   workflow_call:
     inputs:
-      APP_VERSION_VISIBILITY:
+      APP_VERSION_INCREMENT_TYPE:
         type: string
         required: true
-      APP_VERSION_INCREMENT_TYPE:
+      APP_VERSION_VISIBILITY:
         type: string
         required: true
       WORK_DIR:
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Publish app services to VTEX Docker repository
         id: publish-docker-images
